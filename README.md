@@ -7,9 +7,13 @@ Make a note taking application that supports markdown notation and formats on th
 ## Goals
 
 [] Identify the operating system
+
 [] Ability to write text
+
 [] Save text into a document
+
 [] Format documuent to support markdown
+
 
 
 ## Optional Goals
