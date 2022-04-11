@@ -16,5 +16,9 @@ Make a note taking application that supports markdown notation and formats on th
 
 
 
+## External Links
+
+[Markdown Guide](https://www.markdownguide.org/basic-syntax/)
+
 ## Optional Goals
 TBD
