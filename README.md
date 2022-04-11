@@ -21,4 +21,5 @@ Make a note taking application that supports markdown notation and formats on th
 [Markdown Guide](https://www.markdownguide.org/basic-syntax/)
 
 ## Optional Goals
-TBD
+- [ ] Export in various formats
+- [ ] Import and convert various sources
