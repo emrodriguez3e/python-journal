@@ -6,13 +6,13 @@ Make a note taking application that supports markdown notation and formats on th
 
 ## Goals
 
-[] Identify the operating system
+- [ ] Identify the operating system
 
-[] Ability to write text
+- [ ] Ability to write text
 
-[] Save text into a document
+- [ ] Save text into a document
 
-[] Format documuent to support markdown
+- [ ] Format documuent to support markdown
 
 
 
