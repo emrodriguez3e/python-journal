@@ -1,5 +1,7 @@
+import tkinter
 from tkinter import *
 from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
 
 """
 printHelp is just a way to easily printout relevant data to a widget of tkinter
@@ -21,18 +23,30 @@ sampleString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
                "officia deserunt mollit anim id est laborum. "
 
 root = Tk()
+root.title("Python Journal")
+root.geometry('500x400')
 
-frame = ttk.Frame(root, padding=10)
-frame.grid()
+panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL)
 
-introLabel = ttk.Label(frame, text="Hello!")
-introLabel.grid(column=0, row=0)
+# Create the table view and lean everything to the left
+columns = ('name')
+noteView = ttk.Treeview(root, columns=columns, show='headings')
+noteView.pack(side=tkinter.LEFT, expand=True, fill='both')
+noteView.heading('name', text='')
 
-loremString = ttk.Label(frame, text=sampleString)
-loremString.grid(column=1, row=0)
 
-# separate commands for a widget below allows the ability to print its attributes
-quitButton = ttk.Button(frame, text='Quit', command=root.destroy)
-quitButton.grid(column=0, row=2)
 
+# Create ability to scroll through list of notes
+notesScroll = ttk.Scrollbar(noteView, orient='vertical')
+notesScroll.pack(side=tkinter.RIGHT)
+
+# include table view into panedWindow
+panedWindow.add(noteView)
+
+# Create editable text and place onto the right
+note = ScrolledText(root)
+note.pack()
+panedWindow.add(note)
+
+panedWindow.pack(fill=tkinter.BOTH, expand=True)
 root.mainloop()
