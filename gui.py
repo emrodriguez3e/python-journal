@@ -27,6 +27,7 @@ root.title("Python Journal")
 root.geometry('500x400')
 
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL)
+noteFrame = ttk.Frame(root)
 
 # Create the table view and lean everything to the left
 columns = ('name')
@@ -35,18 +36,28 @@ noteView.pack(side=tkinter.LEFT, expand=True, fill='both')
 noteView.heading('name', text='')
 
 
-
 # Create ability to scroll through list of notes
-notesScroll = ttk.Scrollbar(noteView, orient='vertical')
-notesScroll.pack(side=tkinter.RIGHT)
 
-# include table view into panedWindow
-panedWindow.add(noteView)
+text = Text(noteFrame, wrap='word')
+
+scroll = ttk.Scrollbar(noteFrame, orient='vertical')
+scroll.config(command=text.yview)
+scroll.pack(side=tkinter.RIGHT, fill='y')
+text.pack()
+
+
+
+notesScroll = ttk.Scrollbar(noteView, orient='vertical')
+notesScroll.pack(fill='y', side=tkinter.RIGHT)
+
 
 # Create editable text and place onto the right
 note = ScrolledText(root)
-note.pack()
-panedWindow.add(note)
+
+
+# Pack widgets into PanedWindow
+panedWindow.add(noteView)
+panedWindow.add(noteFrame)
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)
 root.mainloop()
