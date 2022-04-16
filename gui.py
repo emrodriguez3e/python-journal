@@ -25,6 +25,12 @@ root = Tk()
 root.title("Python Journal")  # Label the window
 root.resizable(True, True)
 
+
+# Load Media
+cogSize = 7
+cog = PhotoImage(file=r"media/cog.png")
+cogSample = cog.subsample(cogSize,cogSize)
+
 # Create paned window to separate left pane against right pane
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
 noteFrame = ttk.Frame(root)  # This is the right pane
@@ -37,7 +43,7 @@ noteView.heading('name', text='')
 settingPane = ttk.Frame(noteView)
 
 # Create a button that can hide or un-hide settings
-settingsBtn = ttk.Button(noteView, command=lambda: settingwidget(settingPane))
+settingsBtn = ttk.Button(noteView,image=cogSample, compound=LEFT, command=lambda: settingwidget(settingPane))
 settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 
 # Add settings to settingsPane
