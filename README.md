@@ -7,17 +7,6 @@ notation and formats on the go without requiring a
 conversion step. 
 
 
-## Goals
-
-- Identify the operating system
-
-- Ability to write text
-
-- Save text into a document
-
-- Format document to support markdown
-
-
 ## External Links
 
 [Markdown Guide](https://www.markdownguide.org/basic-syntax/)
@@ -28,6 +17,7 @@ conversion step.
 
 [Python Tutorial: Tkinter](https://www.pythontutorial.net/tkinter/)
 
-## Optional Goals
-- [ ] Export in various formats
-- [ ] Import and convert various sources
+## Current 
+
+- Add proper settings
+- Handle visual issues
