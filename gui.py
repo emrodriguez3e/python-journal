@@ -46,25 +46,34 @@ cogSample = cog.subsample(cogSize, cogSize)
 
 # Create paned window to separate left pane against right pane
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
-noteList = ttk.Frame(root)  # This is the left pane
-noteFrame = ttk.Frame(root)  # This is the right pane
+
+# Frames for left pane
+noteFrame = ttk.Frame(root)  # This is the left pane
+treeFrame = ttk.Frame(noteFrame) # Frame to put into left
+settingPane = ttk.Frame(noteFrame, padding=10)  # Create custom frame for settings
+
+
+# Frames for right pane
+textFrame = ttk.Frame(root)  # This is the right pane
+
 
 # Create the table view and lean everything to the left
 columns = ('name')
-treeView = ttk.Treeview(noteList, columns=columns, show='headings')
+treeView = ttk.Treeview(noteFrame, columns=columns, show='headings')
 treeView.heading('name', text='Column Name')
-treeView.pack(side=tkinter.TOP, expand=True, fill='both')
+treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
-settingPane = ttk.Frame(noteList, padding=10)  # Create custom frame for settings
+# Scroll for treeView; left side
+noteScroll = ttk.Scrollbar(noteFrame, orient=tkinter.VERTICAL, command=treeView.yview)
+noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
 # Create a button that can hide or un-hide settings; left pane
-settingsBtn = ttk.Button(noteList, image=cogSample, compound=LEFT, command=lambda: settingwidget(settingPane))
+settingsBtn = ttk.Button(noteFrame, image=cogSample, compound=LEFT, command=lambda: settingwidget(settingPane))
 settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 
 # Add settings to settingsPane
 fontSizeValue = tkinter.DoubleVar()
 lineSpacingValue = tkinter.DoubleVar()
-
 
 
 fontSize = ttk.Scale(settingPane,
@@ -82,7 +91,6 @@ lineSpacing = ttk.Scale(settingPane,
                         command=linespacingchanged,
                         variable=lineSpacingValue
                         )
-
 
 
 fontSizeLabel = ttk.Label(settingPane, text=getfontsize())
@@ -103,24 +111,29 @@ for i in range(1, 20):
 for contact in contacts:
     treeView.insert('', tkinter.END, values=contact)
 
-# Create a thin loading bar; placed on the top
+
+# Create scroll bar for noteFrame; left side
+
+
+
+
+# Loading bar to be placed above note; right side
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
 load.pack(fill='x')
 
-# Create scroll bar for text editable frame; left side
-noteScroll = ttk.Scrollbar(treeView, orient=tkinter.VERTICAL, command=treeView.yview)
-noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
 # Create ability to scroll through list of notes; right side
-text = Text(noteFrame, wrap='word')
-scroll = ttk.Scrollbar(noteFrame, orient='vertical')
+text = Text(textFrame, wrap='word')  # Text widget
+scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
 text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
 
+
+
 # Pack widgets into PanedWindow
-panedWindow.add(noteList)
 panedWindow.add(noteFrame)
+panedWindow.add(textFrame)
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)  # Pack panedWindow
 
