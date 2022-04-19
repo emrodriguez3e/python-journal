@@ -27,8 +27,19 @@ def getlinespace():
 def linespacingchanged(event):
     lineSpacingLabel.configure(text=getlinespace())
 
+
 def fontsizechanged(event):
     fontSizeLabel.configure(text=getfontsize())
+
+
+# Allows to change the text of the note
+def treeitem(event):
+    for item in treeView.selection():
+        item = treeView.item(item)
+
+        item = item['text']
+        text.delete(0.0, END)
+        text.insert(END, item)
 
 
 # Function meant to help get attributes of widgets
@@ -48,9 +59,12 @@ cogSample = cog.subsample(cogSize, cogSize)
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
 
 # Frames for left pane
-noteFrame = ttk.Frame(root)  # This is the left pane
-treeFrame = ttk.Frame(noteFrame) # Frame to put into left
-settingPane = ttk.Frame(noteFrame, padding=10)  # Create custom frame for settings
+leftPane = ttk.Frame(root)  # This is the left pane
+treeFrame = ttk.Frame(leftPane) # Frame to put into left
+
+settingFrame = ttk.Frame(leftPane)
+
+settingPane = ttk.Frame(settingFrame, padding=10)  # Create custom frame for settings
 
 
 # Frames for right pane
@@ -59,16 +73,19 @@ textFrame = ttk.Frame(root)  # This is the right pane
 
 # Create the table view and lean everything to the left
 columns = ('name')
-treeView = ttk.Treeview(noteFrame, columns=columns, show='headings')
+treeView = ttk.Treeview(treeFrame, columns=columns, show='headings')
 treeView.heading('name', text='Column Name')
+
+treeView.bind('<<TreeviewSelect>>', treeitem)
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
+
 # Scroll for treeView; left side
-noteScroll = ttk.Scrollbar(noteFrame, orient=tkinter.VERTICAL, command=treeView.yview)
+noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
 noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
 # Create a button that can hide or un-hide settings; left pane
-settingsBtn = ttk.Button(noteFrame, image=cogSample, compound=LEFT, command=lambda: settingwidget(settingPane))
+settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settingwidget(settingPane))
 settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 
 # Add settings to settingsPane
@@ -112,7 +129,7 @@ for contact in contacts:
     treeView.insert('', tkinter.END, values=contact)
 
 
-# Create scroll bar for noteFrame; left side
+# Create scroll bar for leftPane; left side
 
 
 
@@ -124,15 +141,18 @@ load.pack(fill='x')
 
 # Create ability to scroll through list of notes; right side
 text = Text(textFrame, wrap='word')  # Text widget
+text.insert(END, "Penis")
+
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
 text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
 
 
+treeFrame.pack(fill='both')
 
 # Pack widgets into PanedWindow
-panedWindow.add(noteFrame)
+panedWindow.add(leftPane)
 panedWindow.add(textFrame)
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)  # Pack panedWindow
