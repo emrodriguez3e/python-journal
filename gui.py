@@ -36,7 +36,6 @@ def fontsizechanged(event):
 def treeitem(event):
     for item in treeView.selection():
         item = treeView.item(item)
-
         item = item['text']
         text.delete(0.0, END)
         text.insert(END, item)
@@ -125,8 +124,9 @@ contacts = []
 for i in range(1, 20):
     contacts.append(str(i))
 
+# Text is what I would need to change in the note.
 for contact in contacts:
-    treeView.insert('', tkinter.END, values=contact)
+    treeView.insert('', tkinter.END, text='Sample text',values=contact)
 
 
 # Create scroll bar for leftPane; left side
@@ -141,7 +141,7 @@ load.pack(fill='x')
 
 # Create ability to scroll through list of notes; right side
 text = Text(textFrame, wrap='word')  # Text widget
-text.insert(END, "Penis")
+
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
