@@ -8,6 +8,7 @@ root.title("Python Journal")  # Label the window
 root.resizable(True, True)
 
 
+
 def settingwidget(widget):
     # Need to see if the widget is present or not
     # If 1, then it is visible
@@ -50,7 +51,7 @@ def printhelp(i=0):
 
 
 # Load Media
-cogSize = 7
+cogSize = 6
 cog = PhotoImage(file=r"media/cog.png")
 cogSample = cog.subsample(cogSize, cogSize)
 
@@ -71,12 +72,16 @@ textFrame = ttk.Frame(root)  # This is the right pane
 
 
 # Create the table view and lean everything to the left
-columns = ('name')
-treeView = ttk.Treeview(treeFrame, columns=columns, show='headings')
-treeView.heading('name', text='Column Name')
-
-treeView.bind('<<TreeviewSelect>>', treeitem)
+# columns = ('Column Name')
+treeView = ttk.Treeview(treeFrame, columns=('0'), show='headings')
+treeView.heading('0', text="Heading Name")
+treeView.bind('<<TreeviewSelect>>', treeitem) # This event updates note
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
+
+
+# Following code is how the treeview is populated.
+for i in range(1, 20):
+    treeView.insert('', tkinter.END, text='Body of the text', values=("Note "+str(i), ""))
 
 
 # Scroll for treeView; left side
@@ -119,22 +124,7 @@ lineSpacing.grid(row=1, column=0)
 lineSpacingLabel.grid(row=1, column=1)
 
 
-# Following two for loops populate treeView for testing purposes
-contacts = []
-for i in range(1, 20):
-    contacts.append(str(i))
-
-# Text is what I would need to change in the note.
-for contact in contacts:
-    treeView.insert('', tkinter.END, text='Sample text',values=contact)
-
-
-# Create scroll bar for leftPane; left side
-
-
-
-
-# Loading bar to be placed above note; right side
+# Loading bar to be placed above w note; right side
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
 load.pack(fill='x')
 
