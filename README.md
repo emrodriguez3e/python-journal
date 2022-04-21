@@ -1,5 +1,8 @@
 # python-journal
 
+## Progress
+![img.png](media/img.png)
+
 ## Objective
 
 Make a note-taking application that supports markdown
