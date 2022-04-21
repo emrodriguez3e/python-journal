@@ -75,7 +75,7 @@ textFrame = ttk.Frame(root)  # This is the right pane
 # columns = ('Column Name')
 treeView = ttk.Treeview(treeFrame, columns=('0'), show='headings')
 treeView.heading('0', text="Heading Name")
-treeView.bind('<<TreeviewSelect>>', treeitem) # This event updates note
+treeView.bind('<<TreeviewSelect>>', treeitem)  # This event updates note
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
 
