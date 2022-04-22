@@ -24,4 +24,10 @@ else:
 # This gets the list of notes that are within the directory
 print(os.listdir(noteDirectory))
 
+# Following code gets info about the files. Appears to be in bytes
+for i in os.listdir(noteDirectory):
+	print(os.stat(noteDirectory+"/"+i))
+	print()
+	print()
+
 os.remove(noteDirectory)
