@@ -21,6 +21,7 @@ if not os.path.isdir(noteDirectory):
 else:
     pass
 
-print(os.path.isdir(noteDirectory))
+# This gets the list of notes that are within the directory
+print(os.listdir(noteDirectory))
 
 os.remove(noteDirectory)
