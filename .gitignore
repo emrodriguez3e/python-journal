@@ -1,0 +1,3 @@
+# Don't include example directories.
+/noteDirectory/*
+/noteDirectory
