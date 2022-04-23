@@ -51,8 +51,11 @@ def tree_fill():
     else:
         file = open('noteDirectory/untitled.txt', 'w')
         file.close()
-        list_amount = len(os.listdir(note_directory))
-        print(list_amount)
+
+        file = open('noteDirectory/untitled1.txt', 'w')
+        file.close()
+
+    list_amount = len(os.listdir(note_directory))
 
     for j in range(0, list_amount):
         treeView.insert('', tkinter.END, text='Body of the text', values=("Note", ""))
@@ -105,16 +108,15 @@ treeView.heading('0', text="Heading Name")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
-# Following code is how the treeview is populated.
-# for i in range(1, 20):
-#     treeView.insert('', tkinter.END, text='Body of the text', values=("Note "+str(i), ""))
 
 # This is going to be used to call
-#tree_fill()
+tree_fill()
+
 
 # Scroll for treeView; left side
 noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
 noteScroll.pack(fill='y', side=tkinter.RIGHT)
+
 
 # Create a button that can hide or un-hide settings; left pane
 settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingPane))
@@ -154,6 +156,7 @@ load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
 load.pack(fill='x')
 
 # Create ability to scroll through list of notes; right side
+# TODO: Need to figure out how to save the text from the body
 text = Text(textFrame, wrap='word')  # Text widget
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
