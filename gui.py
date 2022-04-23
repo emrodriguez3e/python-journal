@@ -7,6 +7,7 @@ import os
 root = Tk()
 root.title("Python Journal")  # Label the window
 root.resizable(True, True)
+root.geometry('550x550')
 
 
 def settings_widget(widget):
@@ -70,7 +71,7 @@ def save_note():
 
 
 def update_note():
-    pass
+    new_string = text.get("1.0", "end-1c")
 
 
 # Function meant to help get attributes of widgets
@@ -92,24 +93,26 @@ panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height
 
 # Frames for left pane
 leftPane = ttk.Frame(root)  # This is the left pane
-treeFrame = ttk.Frame(leftPane)  # Frame to put into left
+treeFrame = ttk.Frame(leftPane)  # Frame to put top into left
 
-settingFrame = ttk.Frame(leftPane)
+settingFrame = ttk.Frame(leftPane)  # Frame to put into bottom left
 
-settingPane = ttk.Frame(settingFrame, padding=10)  # Create custom frame for settings
+settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFrame
+
 
 # Frames for right pane
 textFrame = ttk.Frame(root)  # This is the right pane
 
+
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
-treeView = ttk.Treeview(treeFrame, columns=('0'), show='headings')
-treeView.heading('0', text="Heading Name")
+treeView = ttk.Treeview(treeFrame, columns='0', show='headings')
+treeView.heading('0', text="")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
 
-# This is going to be used to call
+# This is going to be used to call to create necessary directory and fill treeView
 tree_fill()
 
 
@@ -119,7 +122,7 @@ noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
 
 # Create a button that can hide or un-hide settings; left pane
-settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingPane))
+settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingFrame))
 settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 
 # Add settings to settingsPane
@@ -150,6 +153,7 @@ fontSize.grid(row=0, column=0)
 fontSizeLabel.grid(row=0, column=1)
 lineSpacing.grid(row=1, column=0)
 lineSpacingLabel.grid(row=1, column=1)
+settingPane.pack(fill='x', side=tkinter.BOTTOM)
 
 # Loading bar to be placed above w note; right side
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
@@ -164,7 +168,7 @@ scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
 text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
 
-treeFrame.pack(fill='both')
+treeFrame.pack(expand=True, fill='both', side=tkinter.TOP)
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
