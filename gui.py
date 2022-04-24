@@ -7,7 +7,8 @@ import os
 root = Tk()
 root.title("Python Journal")  # Label the window
 root.resizable(True, True)
-root.geometry('550x550')
+root.geometry('650x650')
+root.minsize(width=450, height=300)
 
 
 def settings_widget(widget):
@@ -37,12 +38,28 @@ def font_size_changed(event):
 
 # Allows to change the text of the note
 def tree_item(event):
+
+    noteDirectory = os.path.join(os.getcwd(), 'noteDirectory')
+
+    try:
+        panedWindow.forget(textFrame)
+    except:
+        print('Pane could not be forgotten')
+
     for item in treeView.selection():
         item = treeView.item(item)
         item = item['text']
         text.delete(0.0, END)
         text.insert(END, item)
 
+        # file = open(noteDirectory+"untitled"+".txt")
+        #
+        # file.close()
+    panedWindow.add(textFrame)
+
+
+def get_note_body():
+    pass
 
 def tree_fill():
     note_directory = os.path.join(os.getcwd(), 'noteDirectory')
@@ -50,16 +67,20 @@ def tree_fill():
     if not os.path.isdir(note_directory):
         os.mkdir(note_directory)
     else:
-        file = open('noteDirectory/untitled.txt', 'w')
+        file = open('noteDirectory/untitled0.txt', 'w')
+        file.write('Untitled document 0')
         file.close()
 
         file = open('noteDirectory/untitled1.txt', 'w')
+        file.write('Untitled document 1')
         file.close()
 
     list_amount = len(os.listdir(note_directory))
 
-    for j in range(0, list_amount):
-        treeView.insert('', tkinter.END, text='Body of the text', values=("Note", ""))
+    for j in range(0, list_amount-1):
+        file = open('noteDirectory/untitled'+str(j)+'.txt')
+        treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
+        file.close()
 
 
 def save_note():
@@ -120,6 +141,8 @@ tree_fill()
 noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
 noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
+newBtn = ttk.Button(leftPane, compound=LEFT)
+newBtn.pack()
 
 # Create a button that can hide or un-hide settings; left pane
 settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingFrame))
@@ -129,21 +152,27 @@ settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 fontSizeValue = tkinter.DoubleVar()
 lineSpacingValue = tkinter.DoubleVar()
 
+
+
 fontSize = ttk.Scale(settingPane,
-                     from_=0,
-                     to=10,
+                     from_=10,
+                     to=24,
                      orient='horizontal',
                      command=font_size_changed,
                      variable=fontSizeValue
                      )
 
 lineSpacing = ttk.Scale(settingPane,
-                        from_=0,
-                        to=10,
+                        from_=10,
+                        to=24,
                         orient='horizontal',
                         command=line_spacing_changed,
-                        variable=lineSpacingValue
+                        variable=lineSpacingValue,
                         )
+
+print_help(lineSpacing)
+
+
 
 fontSizeLabel = ttk.Label(settingPane, text=get_font_size())
 lineSpacingLabel = ttk.Label(settingPane, text=get_line_space())
@@ -153,6 +182,7 @@ fontSize.grid(row=0, column=0)
 fontSizeLabel.grid(row=0, column=1)
 lineSpacing.grid(row=1, column=0)
 lineSpacingLabel.grid(row=1, column=1)
+
 settingPane.pack(fill='x', side=tkinter.BOTTOM)
 
 # Loading bar to be placed above w note; right side
@@ -162,6 +192,7 @@ load.pack(fill='x')
 # Create ability to scroll through list of notes; right side
 # TODO: Need to figure out how to save the text from the body
 text = Text(textFrame, wrap='word')  # Text widget
+text.configure()
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
@@ -172,7 +203,7 @@ treeFrame.pack(expand=True, fill='both', side=tkinter.TOP)
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
-panedWindow.add(textFrame)
+# panedWindow.add(textFrame)
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)  # Pack panedWindow
 
