@@ -1,33 +1,46 @@
+import tkinter
+from tkinter import *
+from tkinter import ttk
 import os
-noteFolder = []
-
-currentPath = os.getcwd()
-print(os.listdir(currentPath))
 
 
-noteDirectory = os.path.join(currentPath, 'noteDirectory')
+root = Tk()
+root.title("Playground")  # Label the window
+root.resizable(True, True)
+root.geometry('650x650')
 
 
+def tree_fill():
+    note_directory = os.path.join(os.getcwd(), 'noteDirectory')
 
-
-if not os.path.isdir(noteDirectory):
-
-    os.mkdir(currentPath + "\\noteDirectory")
-
-    for i in range(1,11):
-        file = open("noteDirectory\\untitled"+str(i)+".txt", 'w')
+    if not os.path.isdir(note_directory):
+        os.mkdir(note_directory)
+    else:
+        # Currently, the files are overwritten everytime
+        file = open('noteDirectory/untitled.txt', 'w')
         file.close()
-        print("File has been created")
-else:
+
+        file = open('noteDirectory/untitled1.txt', 'w')
+
+
+    list_amount = len(os.listdir(note_directory))
+
+    for j in range(0, list_amount):
+        treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
+    file.close()
+
+def tree_item(event):
     pass
 
-# This gets the list of notes that are within the directory
-print(os.listdir(noteDirectory))
+def get_body():
+    pass
 
-# Following code gets info about the files. Appears to be in bytes
-for i in os.listdir(noteDirectory):
-	print(os.stat(noteDirectory+"/"+i))
-	print()
-	print()
 
-os.remove(noteDirectory)
+treeView = ttk.Treeview(columns='0', show='headings')
+treeView.heading('0', text='')
+treeView.bind('<<TreeviewSelect>>', tree_fill)
+
+treeView.pack(expand=True, fill='both')
+
+root.mainloop()
+

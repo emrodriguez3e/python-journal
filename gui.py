@@ -7,7 +7,7 @@ import os
 root = Tk()
 root.title("Python Journal")  # Label the window
 root.resizable(True, True)
-root.geometry('650x650')
+root.geometry('500x400')
 root.minsize(width=450, height=300)
 
 
