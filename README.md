@@ -1,8 +1,8 @@
 # python-journal
 
 ## Progress
-![img.png](img.png)
-![img_1.png](img_1.png)
+![img.png](media/img.png)
+![img_1.png](media/img_1.png)
 
 ## Objective
 
