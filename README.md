@@ -6,4 +6,4 @@
 
 ## Objective
 
-Note taking application done in Python
+Note-taking application done in Python
