@@ -2,6 +2,7 @@ import tkinter
 from tkinter import *
 from tkinter import ttk
 import os
+from tkinter import font as tkfont
 
 # Create root
 root = Tk()
@@ -10,6 +11,8 @@ root.resizable(True, True)
 root.geometry('500x400')
 root.minsize(width=450, height=300)
 
+
+bold_font = tkfont.Font(weight='bold')
 
 def settings_widget(widget):
     # Need to see if the widget is present or not
@@ -95,8 +98,15 @@ def update_note():
     new_string = text.get("1.0", "end-1c")
 
 
+def format(event):
+    start = '1.0'
+    end='end'
+    text.tag_add('', '1.0','end')
+
+
+
 # Function meant to help get attributes of widgets
-def print_help(i=0):
+def print_help(i=None):
     try:
         print(i.configure().keys())
 
@@ -192,6 +202,8 @@ load.pack(fill='x')
 # Create ability to scroll through list of notes; right side
 # TODO: Need to figure out how to save the text from the body
 text = Text(textFrame, wrap='word')  # Text widget
+text.tag_configure("bold", font=(bold_font))
+text.bind('<KeyRelease>', format)  # Command will call function after every
 text.configure()
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
