@@ -80,17 +80,17 @@ def tree_fill():
 
     list_amount = len(os.listdir(note_directory))
 
-    for j in range(0, list_amount-1):
+    for j in range(0, list_amount):
         file = open('noteDirectory/untitled'+str(j)+'.txt')
         treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
         file.close()
 
 
-def save_note():
-    # Need to be able to check if the file exists
-    # If it is, then simply save the text string from the body
-    # But I also need to figure out how to name the note tho
-    file = open('noteDirectory/untitled.txt', 'w')
+def create_new_note():
+    #TODO Currentrly has a not readable. Text is causing the issue
+    file = open('noteDirectory/untitled'+ str(len(treeView.get_children()))+'.txt', 'w')
+    file.write('Untitled document' + str(len(treeView.get_children())))
+    treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
     file.close()
 
 
@@ -115,19 +115,23 @@ def print_help(i=None):
 
 
 # Load Media
-cogSize = 6
+mediaSize = 6
 cog = PhotoImage(file=r"media/cog.png")
-cogSample = cog.subsample(cogSize, cogSize)
+cogSample = cog.subsample(mediaSize, mediaSize)
+
+plus = PhotoImage(file=r"media/plus.png")
+plusSample = plus.subsample(mediaSize*2, mediaSize*2)
 
 # Create paned window to separate left pane against right pane
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
 
 # Frames for left pane
 leftPane = ttk.Frame(root)  # This is the left pane
+topLeftPane = ttk.Frame(leftPane)
 treeFrame = ttk.Frame(leftPane)  # Frame to put top into left
 
-settingFrame = ttk.Frame(leftPane)  # Frame to put into bottom left
 
+settingFrame = ttk.Frame(leftPane)  # Frame to put into bottom left
 settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFrame
 
 
@@ -138,7 +142,7 @@ textFrame = ttk.Frame(root)  # This is the right pane
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
 treeView = ttk.Treeview(treeFrame, columns='0', show='headings')
-treeView.heading('0', text="")
+treeView.heading('0', text="Notes")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
@@ -147,12 +151,17 @@ treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 tree_fill()
 
 
+
 # Scroll for treeView; left side
 noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
 noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
-newBtn = ttk.Button(leftPane, compound=LEFT)
-newBtn.pack()
+# This section should be above the tree
+newNote = ttk.Button(topLeftPane, compound=LEFT, image=plusSample, command=create_new_note) # new note button
+newNote.pack(side=tkinter.RIGHT)
+
+searchField = Entry(topLeftPane) # search field
+searchField.pack(side=tkinter.RIGHT)
 
 # Create a button that can hide or un-hide settings; left pane
 settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingFrame))
@@ -161,7 +170,6 @@ settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 # Add settings to settingsPane
 fontSizeValue = tkinter.DoubleVar()
 lineSpacingValue = tkinter.DoubleVar()
-
 
 
 fontSize = ttk.Scale(settingPane,
@@ -183,17 +191,26 @@ lineSpacing = ttk.Scale(settingPane,
 print_help(lineSpacing)
 
 
-
+fontSizeText = ttk.Label(settingPane, text='Font Size ')
 fontSizeLabel = ttk.Label(settingPane, text=get_font_size())
+
+lineSpaceText = ttk.Label(settingPane, text = 'Line Spacing ')
 lineSpacingLabel = ttk.Label(settingPane, text=get_line_space())
 
 # Organize setting children widgets
-fontSize.grid(row=0, column=0)
-fontSizeLabel.grid(row=0, column=1)
-lineSpacing.grid(row=1, column=0)
-lineSpacingLabel.grid(row=1, column=1)
+fontSizeText.grid(row=0, column=0)
+fontSize.grid(row=0, column=1)
+fontSizeLabel.grid(row=0, column=2)
 
+lineSpaceText.grid(row=1, column=0)
+lineSpacing.grid(row=1, column=1)
+lineSpacingLabel.grid(row=1, column=2)
+
+
+topLeftPane.pack(fill='x',side=tkinter.TOP)
 settingPane.pack(fill='x', side=tkinter.BOTTOM)
+treeFrame.pack(expand=True, fill='both')
+
 
 # Loading bar to be placed above w note; right side
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
@@ -211,7 +228,6 @@ scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
 text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
 
-treeFrame.pack(expand=True, fill='both', side=tkinter.TOP)
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
