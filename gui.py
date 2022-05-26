@@ -60,6 +60,17 @@ def tree_item(event):
         # file.close()
     panedWindow.add(textFrame)
 
+def treeViewPopUp(event):
+    try:
+        treeViewRightClick.tk_popup(event.x_root, event.y_root)
+    finally:
+        treeViewRightClick.grab_release()
+
+def notePopUp(event):
+    try:
+        noteRightClick.tk_popup(event.x_root, event.y_root)
+    finally:
+        noteRightClick.grab_release()
 
 def get_note_body():
     pass
@@ -139,12 +150,21 @@ settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFr
 textFrame = ttk.Frame(root)  # This is the right pane
 
 
+# Right click menu
+treeViewRightClick = Menu(root, tearoff=0)
+treeViewRightClick.add_command(label='Label1')
+treeViewRightClick.add_command(label='Label2')
+treeViewRightClick.add_command(label='Label3')
+
+
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
 treeView = ttk.Treeview(treeFrame, columns='0', show='headings')
 treeView.heading('0', text="Notes")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
+treeView.bind('<Button-3>', treeViewPopUp) # bind treeViewRightClick here
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
+
 
 
 # This is going to be used to call to create necessary directory and fill treeView
@@ -216,11 +236,18 @@ treeFrame.pack(expand=True, fill='both')
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
 load.pack(fill='x')
 
+# Right click menu for notes
+noteRightClick = Menu(root, tearoff=0)
+noteRightClick.add_command(label='Cut')
+noteRightClick.add_command(label='Copy')
+noteRightClick.add_command(label='Paste')
+
 # Create ability to scroll through list of notes; right side
 # TODO: Need to figure out how to save the text from the body
 text = Text(textFrame, wrap='word')  # Text widget
 text.tag_configure("bold", font=(bold_font))
 text.bind('<KeyRelease>', format)  # Command will call function after every
+text.bind('<Button-3>', notePopUp)
 text.configure()
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
