@@ -2,7 +2,8 @@
 
 ## Progress
 ![img.png](media/img.png)
-![img_1.png](media/img_1.png)
+![img.png](media/img1.png)
+
 
 ## Objective
 
