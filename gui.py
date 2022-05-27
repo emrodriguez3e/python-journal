@@ -81,13 +81,7 @@ def tree_fill():
     if not os.path.isdir(note_directory):
         os.mkdir(note_directory)
     else:
-        file = open('noteDirectory/untitled0.txt', 'w')
-        file.write('Untitled document 0')
-        file.close()
-
-        file = open('noteDirectory/untitled1.txt', 'w')
-        file.write('Untitled document 1')
-        file.close()
+        pass
 
     list_amount = len(os.listdir(note_directory))
 
@@ -98,22 +92,25 @@ def tree_fill():
 
 
 def create_new_note():
-    #TODO Currentrly has a not readable. Text is causing the issue
-    file = open('noteDirectory/untitled'+ str(len(treeView.get_children()))+'.txt', 'w')
-    file.write('Untitled document' + str(len(treeView.get_children())))
-    treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
+    file = open('noteDirectory/untitled'+ str(len(treeView.get_children()))+'.txt', 'w+')
+    file.write('Untitled document ' + str(len(treeView.get_children())))
+    treeView.insert('',tkinter.END, text=file.read() ,values=("Note", ""))
     file.close()
 
 
-def update_note():
+def update_note(event):
     new_string = text.get("1.0", "end-1c")
+    row_id = treeView.index(treeView.focus())
+    file = open('noteDirectory/untitled'+str(row_id)+'.txt', 'w+')
+    file.write(new_string)
+    treeView.item(item=treeView.focus(), text=new_string)
+    file.close()
 
 
 def format(event):
     start = '1.0'
     end='end'
     text.tag_add('', '1.0','end')
-
 
 
 # Function meant to help get attributes of widgets
@@ -243,10 +240,9 @@ noteRightClick.add_command(label='Copy')
 noteRightClick.add_command(label='Paste')
 
 # Create ability to scroll through list of notes; right side
-# TODO: Need to figure out how to save the text from the body
 text = Text(textFrame, wrap='word')  # Text widget
 text.tag_configure("bold", font=(bold_font))
-text.bind('<KeyRelease>', format)  # Command will call function after every
+text.bind('<KeyRelease>', update_note)  # Command will call function after every
 text.bind('<Button-3>', notePopUp)
 text.configure()
 
