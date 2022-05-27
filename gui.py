@@ -94,7 +94,7 @@ def tree_fill():
 def create_new_note():
     file = open('noteDirectory/untitled'+ str(len(treeView.get_children()))+'.txt', 'w+')
     file.write('Untitled document ' + str(len(treeView.get_children())))
-    treeView.insert('',tkinter.END, text=file.read() ,values=("Note", ""))
+    treeView.insert('',tkinter.END, text=file.read() ,values=("Note", "")) # This line isn't updated.
     file.close()
 
 
