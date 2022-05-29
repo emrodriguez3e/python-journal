@@ -70,11 +70,13 @@ def tree_view_pop_up(event):
     finally:
         treeViewRightClick.grab_release()
 
+
 def tree_view_pop_up_duplicate():
     pass
 
+
 def tree_view_pop_up_delete():
-    os.remove('noteDirectory/'+treeView.item(treeView.focus())['values'][0]) # goes out of range
+    os.remove('noteDirectory/' + treeView.item(treeView.focus())['values'][0])  # goes out of range
     treeView.delete(treeView.selection())
 
 
@@ -102,13 +104,14 @@ def tree_fill():
 
 
 def create_new_note():
-    file = open('noteDirectory/untitled' + str(len(os.listdir('noteDirectory'))) + '.txt', 'w+')
-    file.write('Untitled document ' + str(len(treeView.get_children())))
-    treeView.insert('', tkinter.END, text=file.read(), values=(file.read(20), ""))
+    # TODO: Weird bug occurs. If note nth-1 doesn't exist, nothing occurs.
+    file = open('noteDirectory/untitled' + str(len(os.listdir('noteDirectory'))+1) + '.txt', 'w+')
+    file.write('Text')
+    treeView.insert('', tkinter.END, text=file.read(), values=(file.read(), ""))
     file.close()
 
 
-# Updates GUI string by reading txt string
+# Updates GUI strings by reading txt string
 def update_note(event):
     new_string = text.get("1.0", "end-1c")
     row_id = treeView.index(treeView.focus())
@@ -118,7 +121,8 @@ def update_note(event):
     file.close()
 
 
-def format(event):
+# Attempt to perform markdown formatting here
+def formatter(event):
     start = '1.0'
     end = 'end'
     text.tag_add('', '1.0', 'end')
