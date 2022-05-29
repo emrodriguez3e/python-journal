@@ -1,3 +1,4 @@
+import time
 import tkinter
 from tkinter import *
 from tkinter import ttk
@@ -11,8 +12,8 @@ root.resizable(True, True)
 root.geometry('500x400')
 root.minsize(width=450, height=300)
 
-
 bold_font = tkfont.Font(weight='bold')
+
 
 def settings_widget(widget):
     # Need to see if the widget is present or not
@@ -41,8 +42,9 @@ def font_size_changed(event):
 
 # Allows to change the text of the note
 def tree_item(event):
-
-    noteDirectory = os.path.join(os.getcwd(), 'noteDirectory')
+    if not os.path.isdir('noteDirectory'):
+        os.mkdir('noteDirectory')
+    note_directory = os.path.join(os.getcwd(), 'noteDirectory')
 
     try:
         panedWindow.forget(textFrame)
@@ -60,48 +62,57 @@ def tree_item(event):
         # file.close()
     panedWindow.add(textFrame)
 
-def treeViewPopUp(event):
+
+# Function that creates popup menu in treeView at cursor. Doesn't work on MacOS
+def tree_view_pop_up(event):
     try:
         treeViewRightClick.tk_popup(event.x_root, event.y_root)
     finally:
         treeViewRightClick.grab_release()
 
-def notePopUp(event):
+def tree_view_pop_up_duplicate():
+    pass
+
+def tree_view_pop_up_delete():
+    os.remove('noteDirectory/'+treeView.item(treeView.focus())['values'][0]) # goes out of range
+    treeView.delete(treeView.selection())
+
+
+# Function that creates popup menu in note view at cursor. MacOS works
+def note_pop_up(event):
     try:
         noteRightClick.tk_popup(event.x_root, event.y_root)
     finally:
         noteRightClick.grab_release()
 
-def get_note_body():
-    pass
 
+# This functions opens up and gets all available files. Should rename to tree_read
 def tree_fill():
-    note_directory = os.path.join(os.getcwd(), 'noteDirectory')
-
-    if not os.path.isdir(note_directory):
-        os.mkdir(note_directory)
+    if not os.path.isdir('noteDirectory'):
+        os.mkdir('noteDirectory')
     else:
         pass
 
-    list_amount = len(os.listdir(note_directory))
-
-    for j in range(0, list_amount):
-        file = open('noteDirectory/untitled'+str(j)+'.txt')
-        treeView.insert('', tkinter.END, text=file.read(), values=("Note", ""))
-        file.close()
+    # TODO: Should create a list of files to ignore. Could cause some issues in the future
+    for i in os.listdir('noteDirectory'):
+        if not i == '.DS_Store':
+            file = open('noteDirectory/' + i, 'r')
+            treeView.insert('', tkinter.END, text=file.read(), values=(i, ""))
+            file.close()
 
 
 def create_new_note():
-    file = open('noteDirectory/untitled'+ str(len(treeView.get_children()))+'.txt', 'w+')
+    file = open('noteDirectory/untitled' + str(len(os.listdir('noteDirectory'))) + '.txt', 'w+')
     file.write('Untitled document ' + str(len(treeView.get_children())))
-    treeView.insert('',tkinter.END, text=file.read() ,values=("Note", "")) # This line isn't updated.
+    treeView.insert('', tkinter.END, text=file.read(), values=(file.read(20), ""))
     file.close()
 
 
+# Updates GUI string by reading txt string
 def update_note(event):
     new_string = text.get("1.0", "end-1c")
     row_id = treeView.index(treeView.focus())
-    file = open('noteDirectory/untitled'+str(row_id)+'.txt', 'w+')
+    file = open('noteDirectory/untitled' + str(row_id) + '.txt', 'w+')
     file.write(new_string)
     treeView.item(item=treeView.focus(), text=new_string)
     file.close()
@@ -109,15 +120,14 @@ def update_note(event):
 
 def format(event):
     start = '1.0'
-    end='end'
-    text.tag_add('', '1.0','end')
+    end = 'end'
+    text.tag_add('', '1.0', 'end')
 
 
 # Function meant to help get attributes of widgets
 def print_help(i=None):
     try:
         print(i.configure().keys())
-
     except:
         print(str(i) + ' is not a valid input. Skipped.\n')
 
@@ -128,7 +138,7 @@ cog = PhotoImage(file=r"media/cog.png")
 cogSample = cog.subsample(mediaSize, mediaSize)
 
 plus = PhotoImage(file=r"media/plus.png")
-plusSample = plus.subsample(mediaSize*2, mediaSize*2)
+plusSample = plus.subsample(mediaSize * 2, mediaSize * 2)
 
 # Create paned window to separate left pane against right pane
 panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
@@ -138,46 +148,40 @@ leftPane = ttk.Frame(root)  # This is the left pane
 topLeftPane = ttk.Frame(leftPane)
 treeFrame = ttk.Frame(leftPane)  # Frame to put top into left
 
-
 settingFrame = ttk.Frame(leftPane)  # Frame to put into bottom left
 settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFrame
-
 
 # Frames for right pane
 textFrame = ttk.Frame(root)  # This is the right pane
 
-
 # Right click menu
 treeViewRightClick = Menu(root, tearoff=0)
-treeViewRightClick.add_command(label='Label1')
-treeViewRightClick.add_command(label='Label2')
+treeViewRightClick.add_command(label='Duplicate')
+treeViewRightClick.add_command(label='Delete', command=tree_view_pop_up_delete)
 treeViewRightClick.add_command(label='Label3')
-
 
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
 treeView = ttk.Treeview(treeFrame, columns='0', show='headings')
 treeView.heading('0', text="Notes")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
-treeView.bind('<Button-3>', treeViewPopUp) # bind treeViewRightClick here
+treeView.bind('<Button-3>', tree_view_pop_up)  # bind treeViewRightClick here
+treeView.bind('<Button-2>', tree_view_pop_up)
+treeView.bind('<Option-Button-1>', tree_view_pop_up)
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
-
-
 
 # This is going to be used to call to create necessary directory and fill treeView
 tree_fill()
-
-
 
 # Scroll for treeView; left side
 noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
 noteScroll.pack(fill='y', side=tkinter.RIGHT)
 
 # This section should be above the tree
-newNote = ttk.Button(topLeftPane, compound=LEFT, image=plusSample, command=create_new_note) # new note button
+newNote = ttk.Button(topLeftPane, compound=LEFT, image=plusSample, command=create_new_note)  # new note button
 newNote.pack(side=tkinter.RIGHT)
 
-searchField = Entry(topLeftPane) # search field
+searchField = Entry(topLeftPane)  # search field
 searchField.pack(side=tkinter.RIGHT)
 
 # Create a button that can hide or un-hide settings; left pane
@@ -187,7 +191,6 @@ settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
 # Add settings to settingsPane
 fontSizeValue = tkinter.DoubleVar()
 lineSpacingValue = tkinter.DoubleVar()
-
 
 fontSize = ttk.Scale(settingPane,
                      from_=10,
@@ -205,13 +208,10 @@ lineSpacing = ttk.Scale(settingPane,
                         variable=lineSpacingValue,
                         )
 
-print_help(lineSpacing)
-
-
 fontSizeText = ttk.Label(settingPane, text='Font Size ')
 fontSizeLabel = ttk.Label(settingPane, text=get_font_size())
 
-lineSpaceText = ttk.Label(settingPane, text = 'Line Spacing ')
+lineSpaceText = ttk.Label(settingPane, text='Line Spacing ')
 lineSpacingLabel = ttk.Label(settingPane, text=get_line_space())
 
 # Organize setting children widgets
@@ -223,11 +223,9 @@ lineSpaceText.grid(row=1, column=0)
 lineSpacing.grid(row=1, column=1)
 lineSpacingLabel.grid(row=1, column=2)
 
-
-topLeftPane.pack(fill='x',side=tkinter.TOP)
+topLeftPane.pack(fill='x', side=tkinter.TOP)
 settingPane.pack(fill='x', side=tkinter.BOTTOM)
 treeFrame.pack(expand=True, fill='both')
-
 
 # Loading bar to be placed above w note; right side
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
@@ -243,14 +241,15 @@ noteRightClick.add_command(label='Paste')
 text = Text(textFrame, wrap='word')  # Text widget
 text.tag_configure("bold", font=(bold_font))
 text.bind('<KeyRelease>', update_note)  # Command will call function after every
-text.bind('<Button-3>', notePopUp)
+text.bind('<Button-3>', note_pop_up)
+text.bind('<Button-2>', note_pop_up)
+text.bind('<Option-Button-1>', note_pop_up)  # Pop up menu doesn't work on mac for some reason
 text.configure()
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
 text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
-
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
