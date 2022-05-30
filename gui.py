@@ -65,6 +65,7 @@ def tree_item(event):
 
 # Function that creates popup menu in treeView at cursor. Doesn't work on MacOS
 def tree_view_pop_up(event):
+    treeView.selection_set(treeView.identify_row(event.y)) #changes focus to right clicked item
     try:
         treeViewRightClick.tk_popup(event.x_root, event.y_root)
     finally:
@@ -72,12 +73,35 @@ def tree_view_pop_up(event):
 
 
 def tree_view_pop_up_duplicate():
-    pass
+    # Get body of selected note
+    file = open('noteDirectory/'+treeView.item(treeView.selection())['values'][0],'r')
+    copy = file.read()
+    file.close()
+
+    #Duplicate that note
+    file_name = treeView.item(treeView.selection())['values'][0].replace('.txt', '') + ' copy.txt'
+    row_id = treeView.index(treeView.selection())
+    file = open('noteDirectory/'+ file_name,'w')
+    body = 'This is a new note'
+    file.write(body)
+    file.close()
+
+    # insert note after duplicated note
+    treeView.insert('', row_id, text=copy, values=(file_name,''))
+
 
 
 def tree_view_pop_up_delete():
-    os.remove('noteDirectory/' + treeView.item(treeView.focus())['values'][0])  # goes out of range
+    os.remove('noteDirectory/' + treeView.item(treeView.selection())['values'][0])  # goes out of range
     treeView.delete(treeView.selection())
+
+def tree_view_pop_up_rename():
+    pass
+
+def tree_view_debug(event):
+    i = treeView.get_children()
+    print(len(i))
+
 
 
 # Function that creates popup menu in note view at cursor. MacOS works
@@ -104,11 +128,24 @@ def tree_fill():
 
 
 def create_new_note():
-    # TODO: Weird bug occurs. If note nth-1 doesn't exist, nothing occurs.
-    file = open('noteDirectory/untitled' + str(len(os.listdir('noteDirectory'))+1) + '.txt', 'w+')
-    file.write('Text')
-    treeView.insert('', tkinter.END, text=file.read(), values=(file.read(), ""))
+
+    # if there is no note in the directory
+    if len(treeView.get_children()) == 0:
+       newest_note = 'untitled1.txt'
+
+    # Gets biggest note number
+    else:
+        for i in treeView.get_children():
+            if 'untitled' in treeView.item(i)['values'][0] and not 'copy' in treeView.item(i)['values'][0]:
+                note_name = treeView.item(i)['values'][0].replace('untitled', '')
+                note_name = note_name.replace('.txt', '')
+
+        newest_note = 'untitled'+str(int(note_name)+1)+'.txt'
+    file = open('noteDirectory/'+newest_note,'w')
+    body = 'This is a new note'
+    file.write(body)
     file.close()
+    treeView.insert('', tkinter.END, text=body, values=(newest_note, ""))
 
 
 # Updates GUI strings by reading txt string
@@ -117,11 +154,11 @@ def update_note(event):
     row_id = treeView.index(treeView.focus())
     file = open('noteDirectory/untitled' + str(row_id) + '.txt', 'w+')
     file.write(new_string)
-    treeView.item(item=treeView.focus(), text=new_string)
+    treeView.item(item=treeView.selection(), text=new_string)
     file.close()
 
 
-# Attempt to perform markdown formatting here
+# Attempt to perform markdown formatting here, currently not being used.
 def formatter(event):
     start = '1.0'
     end = 'end'
@@ -158,11 +195,14 @@ settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFr
 # Frames for right pane
 textFrame = ttk.Frame(root)  # This is the right pane
 
+root.bind('<Alt-d>', tree_view_debug)
+
 # Right click menu
 treeViewRightClick = Menu(root, tearoff=0)
-treeViewRightClick.add_command(label='Duplicate')
+treeViewRightClick.add_command(label='Duplicate', command=tree_view_pop_up_duplicate)
 treeViewRightClick.add_command(label='Delete', command=tree_view_pop_up_delete)
-treeViewRightClick.add_command(label='Label3')
+treeViewRightClick.add_command(label='Rename File')
+treeViewRightClick.add_command(label='Info', command=tree_view_debug)
 
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
@@ -172,6 +212,7 @@ treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
 treeView.bind('<Button-3>', tree_view_pop_up)  # bind treeViewRightClick here
 treeView.bind('<Button-2>', tree_view_pop_up)
 treeView.bind('<Option-Button-1>', tree_view_pop_up)
+
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
 # This is going to be used to call to create necessary directory and fill treeView
