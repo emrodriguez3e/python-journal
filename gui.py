@@ -5,26 +5,12 @@ from tkinter import ttk
 import os
 from tkinter import font as tkfont
 
-
 # Create root
 root = Tk()
 root.title("Python Journal")  # Label the window
 root.resizable(True, True)
-
-# Initial width and height dimensions
-w = 600
-h = 500
-
-# Get screen info
-ws = root.winfo_screenwidth()
-hs = root.winfo_screenheight()
-
-# Calculate x and y for Tk root window
-x = (ws/2) - (w/2)
-y = (hs/2) - (h/2)
-
-root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-root.minsize(width=450, height=250)
+root.geometry('500x400')
+root.minsize(width=450, height=300)
 
 bold_font = tkfont.Font(weight='bold')
 
@@ -60,7 +46,6 @@ def tree_item(event):
         os.mkdir('noteDirectory')
     note_directory = os.path.join(os.getcwd(), 'noteDirectory')
 
-    #This is where textframe is added to the frame but isn't packed?
     try:
         panedWindow.forget(textFrame)
     except:
@@ -114,8 +99,8 @@ def tree_view_pop_up_rename():
     pass
 
 def tree_view_debug(event):
-    i = treeView.item(treeView.selection())
-    print(len(i['text'].split()))
+    i = treeView.get_children()
+    print(len(i))
 
 
 
@@ -197,10 +182,10 @@ plus = PhotoImage(file=r"media/plus.png")
 plusSample = plus.subsample(mediaSize * 2, mediaSize * 2)
 
 # Create paned window to separate left pane against right pane
-panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL)
+panedWindow = ttk.PanedWindow(root, orient=tkinter.HORIZONTAL, width=400, height=300)
 
 # Frames for left pane
-leftPane = ttk.Frame(root, padding=2)  # This is the left pane
+leftPane = ttk.Frame(root)  # This is the left pane
 topLeftPane = ttk.Frame(leftPane)
 treeFrame = ttk.Frame(leftPane)  # Frame to put top into left
 
@@ -209,7 +194,6 @@ settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFr
 
 # Frames for right pane
 textFrame = ttk.Frame(root)  # This is the right pane
-infoFrame = ttk.Frame(textFrame)
 
 root.bind('<Alt-d>', tree_view_debug)
 
@@ -218,18 +202,7 @@ treeViewRightClick = Menu(root, tearoff=0)
 treeViewRightClick.add_command(label='Duplicate', command=tree_view_pop_up_duplicate)
 treeViewRightClick.add_command(label='Delete', command=tree_view_pop_up_delete)
 treeViewRightClick.add_command(label='Rename File')
-treeViewRightClick.add_separator()
 treeViewRightClick.add_command(label='Info', command=tree_view_debug)
-
-# bear has the following options
-'''
-Open in a new window
-Copy as
-Pin/unpin note
-Archive
-Privacy
-Merge
-'''
 
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
@@ -303,15 +276,11 @@ treeFrame.pack(expand=True, fill='both')
 load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
 load.pack(fill='x')
 
-# Right click menu for notes, does nothing at the moment
+# Right click menu for notes
 noteRightClick = Menu(root, tearoff=0)
 noteRightClick.add_command(label='Cut')
 noteRightClick.add_command(label='Copy')
 noteRightClick.add_command(label='Paste')
-noteRightClick.add_separator()
-noteRightClick.add_command(label='Bold')
-noteRightClick.add_command(label='Italics')
-noteRightClick.add_command(label='Underline')
 
 # Create ability to scroll through list of notes; right side
 text = Text(textFrame, wrap='word')  # Text widget
@@ -322,24 +291,14 @@ text.bind('<Button-2>', note_pop_up)
 text.bind('<Option-Button-1>', note_pop_up)  # Pop up menu doesn't work on mac for some reason
 text.configure()
 
-# infoFrame informatino; right side
-word_count = Label(infoFrame, text='Word Count\n0', padx=10)
-word_count.pack()
-
-character_count =Label(infoFrame, text='Char Count\n0')
-character_count.pack()
-
-infoFrame.pack(fill='y', expand=False, side=tkinter.RIGHT) #text pack needs to be last
-
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
-text.pack(fill='both',expand=True, side=tkinter.LEFT)  # need to pack text widget last for the scroll attachment
-
+text.pack(fill='both', expand=True)  # need to pack text widget last for the scroll attachment
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
-
+# panedWindow.add(textFrame)
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)  # Pack panedWindow
 
