@@ -2,9 +2,9 @@
 
 ## Progress
 ![img.png](media/img.png)
-![img.png](media/img1.png)
 
 
 ## Objective
 
-Note-taking application done in Python
+Note-taking application done using only tkinter. 
+
