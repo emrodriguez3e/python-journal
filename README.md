@@ -8,3 +8,9 @@
 
 Note-taking application done using only tkinter. 
 
+- Create new notes
+- Deletes notes
+- Keyboard shortcuts
+- Right click pop up menus
+- Updates notes
+
