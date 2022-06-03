@@ -14,3 +14,9 @@ Note-taking application done using only tkinter.
 - Right click pop up menus
 - Updates notes
 
+
+## Planned features
+- Link settings to text widget
+- Create ttk theme
+- Markdown formatting 
+- Turn info panel into hidden menu
