@@ -284,6 +284,8 @@ treeViewRightClick.add_command(label='Duplicate', command=tree_view_pop_up_dupli
 treeViewRightClick.add_command(label='Delete', command=tree_view_pop_up_delete)
 treeViewRightClick.add_command(label='Rename File')
 treeViewRightClick.add_separator()
+treeViewRightClick.add_command(label='Merge')
+treeViewRightClick.add_command(label='Open in new window')
 treeViewRightClick.add_command(label='Info', command=app_debugger)
 
 # bear has the following options
@@ -377,8 +379,8 @@ noteRightClick.add_command(label='Underline')
 text = Text(textFrame, wrap='word')  # Text widget
 text.tag_configure("bold", font=(bold_font))
 text.bind('<KeyRelease>', update_note)  # Command will call function after every
-text.bind('<Button-3>', note_pop_up)
 text.bind('<Button-2>', note_pop_up)
+text.bind('<Button-3>', note_pop_up)
 text.bind('<Option-Button-1>', note_pop_up)  # Pop up menu doesn't work on mac for some reason
 text.configure()
 
