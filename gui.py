@@ -6,80 +6,102 @@ import os
 from tkinter import font as tkfont
 
 
-# Create root
-root = Tk()
-root.title("Python Journal")  # Label the window
-root.resizable(True, True)
-
-# Initial width and height dimensions
-w = 600
-h = 500
-
-# Get screen info
-ws = root.winfo_screenwidth()
-hs = root.winfo_screenheight()
-
-# Calculate x and y for Tk root window
-x = (ws/2) - (w/2)
-y = (hs/2) - (h/2)
-
-root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-root.minsize(width=450, height=250)
-
-bold_font = tkfont.Font(weight='bold')
 
 
-def settings_widget(widget):
-    # Need to see if the widget is present or not
-    # If 1, then it is visible
-    if widget.winfo_ismapped() == 1:
-        widget.pack_forget()
-    else:
-        widget.pack()
+def settings_widget(*args):
+
+    # Initial width and height dimensions
+    w = 300
+    h = 200
+
+    # Get screen info
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+
+    # Calculate x and y for Tk root window
+    x = (ws / 2) - (w / 2)
+    y = (hs / 2) - (h / 2)
 
 
-def get_font_size():
-    return '{: .2f}'.format(fontSizeValue.get())
+    setting_root = Toplevel()
+    setting_root.title("Settings")
+
+    sFrame = Frame(setting_root)
+    sFrame.pack()
+
+    groupName = Label(sFrame, text='Typography')
+    fontSizeTex = Label(sFrame, text="Font Size ")
 
 
-def get_line_space():
-    return '{: .2f}'.format(lineSpacingValue.get())
+    scale1 = ttk.Scale(sFrame,
+                       from_=10,
+                       to=24,
+                       orient='horizontal',
+                       command=font_size_changed,
+                       variable=fontSizeValue
+                       )
 
 
-def line_spacing_changed(event):
-    lineSpacingLabel.configure(text=get_line_space())
+    fontSizeLab = Label(sFrame, textvariable=fontSizeValue)
+
+    lineSpaceTex = Label(sFrame, text='Line Spacing ')
+
+    scale2 = ttk.Scale(sFrame,
+                       from_=10,
+                       to=24,
+                       orient='horizontal',
+                       command= line_spacing_changed,
+                       variable=lineSpacingValue
+                       )
+
+    lineSpaceLabel = Label(sFrame, textvariable=lineSpacingValue)
+
+    groupName.grid(row=0, column=0)
+
+    fontSizeTex.grid(row=1, column=0)
+    scale1.grid(row=2, column=0)
+    fontSizeLab.grid(row=2, column=1)
+
+    lineSpaceTex.grid(row=3, column = 0)
+    scale2.grid(row=4, column=0)
+    lineSpaceLabel.grid(row=4, column=1)
+
+    setting_root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
-def font_size_changed(event):
-    fontSizeLabel.configure(text=get_font_size())
+def font_size_changed(*args):
+    fontSizeValue.set(value='{: .2f}'.format(float(args[0])))
+
+
+def line_spacing_changed(*args):
+    return lineSpacingValue.set(value='{: .2f}'.format(float(args[0])))
 
 
 # Allows to change the text of the note
 def tree_item(event):
+
     if not os.path.isdir('noteDirectory'):
         os.mkdir('noteDirectory')
     note_directory = os.path.join(os.getcwd(), 'noteDirectory')
 
-    #This is where textframe is added to the frame but isn't packed?
-    try:
-        panedWindow.forget(textFrame)
-    except:
-        print('Pane could not be forgotten')
 
-    for item in treeView.selection():
-        item = treeView.item(item)
-        item = item['text']
-        text.delete(0.0, END)
-        text.insert(END, item)
+    item = treeView.item(treeView.selection()[0])['text'] # Get text selection, must be set to 0 for multiple selections
+    text.delete(0.0, END) # Delete old text data
+    text.insert(END, item) # Insert new text data
 
-        # file = open(noteDirectory+"untitled"+".txt")
-        #
-        # file.close()
-    panedWindow.add(textFrame)
+    # Update information about the note
+    word_count.config(text="Word Count\n" + str(len(item.split(" "))))
+    character_count.config(text="Character Count\n" + str(len(item)))
+
+    # Will add second frame if it doesn't exist
+    if not'.!frame2' in panedWindow.panes():
+        panedWindow.add(textFrame)
+
 
 
 # Function that creates popup menu in treeView at cursor. Doesn't work on MacOS
 def tree_view_pop_up(event):
+    treeView.focus(treeView.selection())
     treeView.selection_set(treeView.identify_row(event.y)) #changes focus to right clicked item
     try:
         treeViewRightClick.tk_popup(event.x_root, event.y_root)
@@ -87,36 +109,42 @@ def tree_view_pop_up(event):
         treeViewRightClick.grab_release()
 
 
+# TODO: Partially works
+'''
+Editing note then duplicating note does not work as expected. 
+Editing note, clicking another note and then coming back works as expected. 
+'''
 def tree_view_pop_up_duplicate():
     # Get body of selected note
     file = open('noteDirectory/'+treeView.item(treeView.selection())['values'][0],'r')
     copy = file.read()
     file.close()
 
+    print(copy)
+
     #Duplicate that note
     file_name = treeView.item(treeView.selection())['values'][0].replace('.txt', '') + ' copy.txt'
     row_id = treeView.index(treeView.selection())
     file = open('noteDirectory/'+ file_name,'w')
-    body = 'This is a new note'
+    body = copy
     file.write(body)
     file.close()
 
     # insert note after duplicated note
-    treeView.insert('', row_id, text=copy, values=(file_name,''))
-
+    treeView.insert('', row_id, text=body, values=(file_name,''))
 
 
 def tree_view_pop_up_delete():
     os.remove('noteDirectory/' + treeView.item(treeView.selection())['values'][0])  # goes out of range
     treeView.delete(treeView.selection())
 
+def tree_view_pop_up_delete_event(event):
+    for i in treeView.selection():
+        os.remove('noteDirectory/' + treeView.item(i)['values'][0])  # goes out of range
+        treeView.delete(i)
+
 def tree_view_pop_up_rename():
     pass
-
-def tree_view_debug(event):
-    i = treeView.item(treeView.selection())
-    print(len(i['text'].split()))
-
 
 
 # Function that creates popup menu in note view at cursor. MacOS works
@@ -142,8 +170,8 @@ def tree_fill():
             file.close()
 
 
-def create_new_note():
 
+def create_new_note():
     # if there is no note in the directory
     if len(treeView.get_children()) == 0:
        newest_note = 'untitled1.txt'
@@ -162,6 +190,11 @@ def create_new_note():
     file.close()
     treeView.insert('', tkinter.END, text=body, values=(newest_note, ""))
 
+def create_new_note_bind(event):
+    print('reached')
+    create_new_note()
+
+
 
 # Updates GUI strings by reading txt string
 def update_note(event):
@@ -171,6 +204,7 @@ def update_note(event):
     file.write(new_string)
     treeView.item(item=treeView.selection(), text=new_string)
     file.close()
+
 
 
 # Attempt to perform markdown formatting here, currently not being used.
@@ -187,6 +221,38 @@ def print_help(i=None):
     except:
         print(str(i) + ' is not a valid input. Skipped.\n')
 
+
+def app_debugger(event):
+    for i in treeView.selection():
+        print(treeView.item(i)['values'][0])
+
+
+# Create root
+root = Tk()
+root.title("Python Journal")  # Label the window
+root.resizable(True, True)
+
+# Initial width and height dimensions
+w = 600
+h = 500
+
+# Get screen info
+ws = root.winfo_screenwidth()
+hs = root.winfo_screenheight()
+
+# Calculate x and y for Tk root window
+x = (ws/2) - (w/2)
+y = (hs/2) - (h/2)
+
+root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+root.minsize(width=450, height=250)
+
+bold_font = tkfont.Font(weight='bold')
+
+# Command to be used to run specfic commands
+root.bind('<Alt-d>', app_debugger)
+root.bind('<Alt-s>', settings_widget)
+root.bind('<Control-n>', create_new_note_bind)
 
 # Load Media
 mediaSize = 6
@@ -211,7 +277,6 @@ settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFr
 textFrame = ttk.Frame(root)  # This is the right pane
 infoFrame = ttk.Frame(textFrame)
 
-root.bind('<Alt-d>', tree_view_debug)
 
 # Right click menu
 treeViewRightClick = Menu(root, tearoff=0)
@@ -219,7 +284,7 @@ treeViewRightClick.add_command(label='Duplicate', command=tree_view_pop_up_dupli
 treeViewRightClick.add_command(label='Delete', command=tree_view_pop_up_delete)
 treeViewRightClick.add_command(label='Rename File')
 treeViewRightClick.add_separator()
-treeViewRightClick.add_command(label='Info', command=tree_view_debug)
+treeViewRightClick.add_command(label='Info', command=app_debugger)
 
 # bear has the following options
 '''
@@ -234,11 +299,11 @@ Merge
 # Create the table view and lean everything to the left
 # columns = ('Column Name')
 treeView = ttk.Treeview(treeFrame, columns='0', show='headings')
-treeView.heading('0', text="Notes")
 treeView.bind('<<TreeviewSelect>>', tree_item)  # This event updates note
 treeView.bind('<Button-3>', tree_view_pop_up)  # bind treeViewRightClick here
 treeView.bind('<Button-2>', tree_view_pop_up)
 treeView.bind('<Option-Button-1>', tree_view_pop_up)
+treeView.bind('<BackSpace>', tree_view_pop_up_delete_event)
 
 treeView.pack(side=tkinter.LEFT, expand=True, fill='both')
 
@@ -247,61 +312,56 @@ tree_fill()
 
 # Scroll for treeView; left side
 noteScroll = ttk.Scrollbar(treeFrame, orient=tkinter.VERTICAL, command=treeView.yview)
-noteScroll.pack(fill='y', side=tkinter.RIGHT)
+noteScroll.pack(fill='y',
+                side=tkinter.RIGHT
+                )
 
 # This section should be above the tree
-newNote = ttk.Button(topLeftPane, compound=LEFT, image=plusSample, command=create_new_note)  # new note button
-newNote.pack(side=tkinter.RIGHT)
+newNote = ttk.Button(leftPane,
+                     compound=LEFT,
+                     image=plusSample,
+                     command=create_new_note
+                     )  # new note button
+
+newNote.place(relx=0.9,
+              rely=0.95,
+              anchor='se'
+              )
+
 
 searchField = Entry(topLeftPane)  # search field
 searchField.pack(side=tkinter.RIGHT)
 
 # Create a button that can hide or un-hide settings; left pane
-settingsBtn = ttk.Button(leftPane, image=cogSample, compound=LEFT, command=lambda: settings_widget(settingFrame))
-settingsBtn.place(relx=0.9, rely=0.95, anchor='se')
+
 
 # Add settings to settingsPane
 fontSizeValue = tkinter.DoubleVar()
 lineSpacingValue = tkinter.DoubleVar()
 
-fontSize = ttk.Scale(settingPane,
-                     from_=10,
-                     to=24,
-                     orient='horizontal',
-                     command=font_size_changed,
-                     variable=fontSizeValue
-                     )
+fontSizeValue.set(10.00)
+lineSpacingValue.set(10.00)
 
-lineSpacing = ttk.Scale(settingPane,
-                        from_=10,
-                        to=24,
-                        orient='horizontal',
-                        command=line_spacing_changed,
-                        variable=lineSpacingValue,
-                        )
+settingsBtn = ttk.Button(topLeftPane,
+                         image=cogSample,
+                         compound=LEFT,
+                         command = settings_widget
+                         )
+
+settingsBtn.pack(side=tkinter.LEFT)
+
 
 fontSizeText = ttk.Label(settingPane, text='Font Size ')
-fontSizeLabel = ttk.Label(settingPane, text=get_font_size())
+fontSizeLabel = ttk.Label(settingPane)
 
 lineSpaceText = ttk.Label(settingPane, text='Line Spacing ')
-lineSpacingLabel = ttk.Label(settingPane, text=get_line_space())
+lineSpacingLabel = ttk.Label(settingPane)
 
-# Organize setting children widgets
-fontSizeText.grid(row=0, column=0)
-fontSize.grid(row=0, column=1)
-fontSizeLabel.grid(row=0, column=2)
-
-lineSpaceText.grid(row=1, column=0)
-lineSpacing.grid(row=1, column=1)
-lineSpacingLabel.grid(row=1, column=2)
 
 topLeftPane.pack(fill='x', side=tkinter.TOP)
 settingPane.pack(fill='x', side=tkinter.BOTTOM)
 treeFrame.pack(expand=True, fill='both')
 
-# Loading bar to be placed above w note; right side
-load = ttk.Progressbar(root, orient='horizontal', mode='determinate')
-load.pack(fill='x')
 
 # Right click menu for notes, does nothing at the moment
 noteRightClick = Menu(root, tearoff=0)
@@ -339,7 +399,6 @@ text.pack(fill='both',expand=True, side=tkinter.LEFT)  # need to pack text widge
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
-
 
 panedWindow.pack(fill=tkinter.BOTH, expand=True)  # Pack panedWindow
 
