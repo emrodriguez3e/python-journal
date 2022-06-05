@@ -196,7 +196,7 @@ def create_new_note_bind(event):
 
 
 
-# Updates GUI strings by reading txt string
+# Updates GUI strings by reading txt s
 def update_note(event):
     new_string = text.get("1.0", "end-1c")
     row_id = treeView.index(treeView.focus())
