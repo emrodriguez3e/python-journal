@@ -22,13 +22,28 @@ def settings_widget(*args):
     setting_root = Toplevel()
     setting_root.title("Settings")
 
+
     sFrame = Frame(setting_root)
     sFrame.pack()
 
-    groupName = Label(sFrame, text='Typography')
-    fontSizeTex = Label(sFrame, text="Font Size ")
+    sTextFrame = Frame(setting_root)
+    sTextFrame.pack()
 
-    scale1 = ttk.Scale(sFrame,
+    setting_scroll = ttk.Scrollbar(setting_root, orient="vertical")
+    setting_scroll.config(command=setting_root.yview)
+    setting_scroll.pack(side=tkinter.RIGHT, fill='y')
+
+    setting_root.config()
+
+
+    text_box = Text(sFrame, height=12, width=40)
+    text_box.config(state='disabled')
+    text_box.pack()
+
+    groupName = Label(sTextFrame, text='Typography')
+    fontSizeTex = Label(sTextFrame, text="Font Size ")
+
+    scale1 = ttk.Scale(sTextFrame,
                        from_=10,
                        to=24,
                        orient='horizontal',
@@ -36,11 +51,11 @@ def settings_widget(*args):
                        variable=fontSizeValue
                        )
 
-    fontSizeLab = Label(sFrame, textvariable=fontSizeValue)
+    fontSizeLab = Label(sTextFrame, textvariable=fontSizeValue)
 
-    lineSpaceTex = Label(sFrame, text='Line Spacing ')
+    lineSpaceTex = Label(sTextFrame, text='Line Spacing ')
 
-    scale2 = ttk.Scale(sFrame,
+    scale2 = ttk.Scale(sTextFrame,
                        from_=10,
                        to=24,
                        orient='horizontal',
@@ -48,7 +63,7 @@ def settings_widget(*args):
                        variable=lineSpacingValue
                        )
 
-    lineSpaceLabel = Label(sFrame, textvariable=lineSpacingValue)
+    lineSpaceLabel = Label(sTextFrame, textvariable=lineSpacingValue)
 
     groupName.grid(row=0, column=0)
 
@@ -61,6 +76,7 @@ def settings_widget(*args):
     lineSpaceLabel.grid(row=4, column=1)
 
     setting_root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
 
 
 def font_size_changed(*args):
