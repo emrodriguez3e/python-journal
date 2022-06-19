@@ -3,10 +3,10 @@ from tkinter import *
 from tkinter import font as tkfont
 import re
 
-
 root = Tk()
 
 bold_font = tkfont.Font(weight='bold')
+
 
 # Initially, not having both lines didn't auto update. Might be a better
 # Tkinter doesn't support compiled regular expressions??
@@ -16,15 +16,12 @@ def func(event):
 
     while start_position != 'end':
         pos = text.search("\*\*[a-zA-Z]+\*\*", start_position, nocase=1, stopindex='end', regexp=True, count=count_var)
-        start_position = '%s + %sc' % (pos, int(count_var.get())+1)
+        start_position = '%s + %sc' % (pos, int(count_var.get()) + 1)
         print(start_position)
-        text.tag_add('bold_font', pos, start_position) # Throw a 'bad text index "" here. Doesn't crash program tho'
+        text.tag_add('bold_font', pos, start_position)  # Throw a 'bad text index "" here. Doesn't crash program tho'
         text.tag_config('bold_font', font=bold_font)
 
-
     print("Position: " + pos + "\nCount: " + count_var.get())
-
-
 
 
 text = Text(root)

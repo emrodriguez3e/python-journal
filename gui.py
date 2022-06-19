@@ -6,10 +6,7 @@ import os
 from tkinter import font as tkfont
 
 
-
-
 def settings_widget(*args):
-
     # Initial width and height dimensions
     w = 300
     h = 200
@@ -22,7 +19,6 @@ def settings_widget(*args):
     x = (ws / 2) - (w / 2)
     y = (hs / 2) - (h / 2)
 
-
     setting_root = Toplevel()
     setting_root.title("Settings")
 
@@ -32,7 +28,6 @@ def settings_widget(*args):
     groupName = Label(sFrame, text='Typography')
     fontSizeTex = Label(sFrame, text="Font Size ")
 
-
     scale1 = ttk.Scale(sFrame,
                        from_=10,
                        to=24,
@@ -40,7 +35,6 @@ def settings_widget(*args):
                        command=font_size_changed,
                        variable=fontSizeValue
                        )
-
 
     fontSizeLab = Label(sFrame, textvariable=fontSizeValue)
 
@@ -50,7 +44,7 @@ def settings_widget(*args):
                        from_=10,
                        to=24,
                        orient='horizontal',
-                       command= line_spacing_changed,
+                       command=line_spacing_changed,
                        variable=lineSpacingValue
                        )
 
@@ -62,7 +56,7 @@ def settings_widget(*args):
     scale1.grid(row=2, column=0)
     fontSizeLab.grid(row=2, column=1)
 
-    lineSpaceTex.grid(row=3, column = 0)
+    lineSpaceTex.grid(row=3, column=0)
     scale2.grid(row=4, column=0)
     lineSpaceLabel.grid(row=4, column=1)
 
@@ -79,30 +73,28 @@ def line_spacing_changed(*args):
 
 # Allows to change the text of the note
 def tree_item(event):
-
     if not os.path.isdir('noteDirectory'):
         os.mkdir('noteDirectory')
     note_directory = os.path.join(os.getcwd(), 'noteDirectory')
 
-
-    item = treeView.item(treeView.selection()[0])['text'] # Get text selection, must be set to 0 for multiple selections
-    text.delete(0.0, END) # Delete old text data
-    text.insert(END, item) # Insert new text data
+    item = treeView.item(treeView.selection()[0])[
+        'text']  # Get text selection, must be set to 0 for multiple selections
+    text.delete(0.0, END)  # Delete old text data
+    text.insert(END, item)  # Insert new text data
 
     # Update information about the note
     word_count.config(text="Word Count\n" + str(len(item.split(" "))))
     character_count.config(text="Character Count\n" + str(len(item)))
 
     # Will add second frame if it doesn't exist
-    if not'.!frame2' in panedWindow.panes():
+    if not '.!frame2' in panedWindow.panes():
         panedWindow.add(textFrame)
-
 
 
 # Function that creates popup menu in treeView at cursor. Doesn't work on MacOS
 def tree_view_pop_up(event):
     treeView.focus(treeView.selection())
-    treeView.selection_set(treeView.identify_row(event.y)) #changes focus to right clicked item
+    treeView.selection_set(treeView.identify_row(event.y))  # changes focus to right clicked item
     try:
         treeViewRightClick.tk_popup(event.x_root, event.y_root)
     finally:
@@ -114,34 +106,38 @@ def tree_view_pop_up(event):
 Editing note then duplicating note does not work as expected. 
 Editing note, clicking another note and then coming back works as expected. 
 '''
+
+
 def tree_view_pop_up_duplicate():
     # Get body of selected note
-    file = open('noteDirectory/'+treeView.item(treeView.selection())['values'][0],'r')
+    file = open('noteDirectory/' + treeView.item(treeView.selection())['values'][0], 'r')
     copy = file.read()
     file.close()
 
     print(copy)
 
-    #Duplicate that note
+    # Duplicate that note
     file_name = treeView.item(treeView.selection())['values'][0].replace('.txt', '') + ' copy.txt'
     row_id = treeView.index(treeView.selection())
-    file = open('noteDirectory/'+ file_name,'w')
+    file = open('noteDirectory/' + file_name, 'w')
     body = copy
     file.write(body)
     file.close()
 
     # insert note after duplicated note
-    treeView.insert('', row_id, text=body, values=(file_name,''))
+    treeView.insert('', row_id, text=body, values=(file_name, ''))
 
 
 def tree_view_pop_up_delete():
     os.remove('noteDirectory/' + treeView.item(treeView.selection())['values'][0])  # goes out of range
     treeView.delete(treeView.selection())
 
+
 def tree_view_pop_up_delete_event(event):
     for i in treeView.selection():
         os.remove('noteDirectory/' + treeView.item(i)['values'][0])  # goes out of range
         treeView.delete(i)
+
 
 def tree_view_pop_up_rename():
     pass
@@ -170,11 +166,10 @@ def tree_fill():
             file.close()
 
 
-
 def create_new_note():
     # if there is no note in the directory
     if len(treeView.get_children()) == 0:
-       newest_note = 'untitled1.txt'
+        newest_note = 'untitled1.txt'
 
     # Gets biggest note number
     else:
@@ -183,17 +178,17 @@ def create_new_note():
                 note_name = treeView.item(i)['values'][0].replace('untitled', '')
                 note_name = note_name.replace('.txt', '')
 
-        newest_note = 'untitled'+str(int(note_name)+1)+'.txt'
-    file = open('noteDirectory/'+newest_note,'w')
+        newest_note = 'untitled' + str(int(note_name) + 1) + '.txt'
+    file = open('noteDirectory/' + newest_note, 'w')
     body = 'This is a new note'
     file.write(body)
     file.close()
     treeView.insert('', tkinter.END, text=body, values=(newest_note, ""))
 
+
 def create_new_note_bind(event):
     print('reached')
     create_new_note()
-
 
 
 # Updates GUI strings by reading txt s
@@ -204,7 +199,6 @@ def update_note(event):
     file.write(new_string)
     treeView.item(item=treeView.selection(), text=new_string)
     file.close()
-
 
 
 # Attempt to perform markdown formatting here, currently not being used.
@@ -241,8 +235,8 @@ ws = root.winfo_screenwidth()
 hs = root.winfo_screenheight()
 
 # Calculate x and y for Tk root window
-x = (ws/2) - (w/2)
-y = (hs/2) - (h/2)
+x = (ws / 2) - (w / 2)
+y = (hs / 2) - (h / 2)
 
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 root.minsize(width=450, height=250)
@@ -276,7 +270,6 @@ settingPane = ttk.Frame(settingFrame, padding=10)  # Frame to put into settingFr
 # Frames for right pane
 textFrame = ttk.Frame(root)  # This is the right pane
 infoFrame = ttk.Frame(textFrame)
-
 
 # Right click menu
 treeViewRightClick = Menu(root, tearoff=0)
@@ -330,7 +323,6 @@ newNote.place(relx=0.9,
               anchor='se'
               )
 
-
 searchField = Entry(topLeftPane)  # search field
 searchField.pack(side=tkinter.RIGHT)
 
@@ -347,11 +339,10 @@ lineSpacingValue.set(10.00)
 settingsBtn = ttk.Button(topLeftPane,
                          image=cogSample,
                          compound=LEFT,
-                         command = settings_widget
+                         command=settings_widget
                          )
 
 settingsBtn.pack(side=tkinter.LEFT)
-
 
 fontSizeText = ttk.Label(settingPane, text='Font Size ')
 fontSizeLabel = ttk.Label(settingPane)
@@ -359,11 +350,9 @@ fontSizeLabel = ttk.Label(settingPane)
 lineSpaceText = ttk.Label(settingPane, text='Line Spacing ')
 lineSpacingLabel = ttk.Label(settingPane)
 
-
 topLeftPane.pack(fill='x', side=tkinter.TOP)
 settingPane.pack(fill='x', side=tkinter.BOTTOM)
 treeFrame.pack(expand=True, fill='both')
-
 
 # Right click menu for notes, does nothing at the moment
 noteRightClick = Menu(root, tearoff=0)
@@ -388,16 +377,15 @@ text.configure()
 word_count = Label(infoFrame, text='Word Count\n0', padx=10)
 word_count.pack()
 
-character_count =Label(infoFrame, text='Char Count\n0')
+character_count = Label(infoFrame, text='Char Count\n0')
 character_count.pack()
 
-infoFrame.pack(fill='y', expand=False, side=tkinter.RIGHT) #text pack needs to be last
+infoFrame.pack(fill='y', expand=False, side=tkinter.RIGHT)  # text pack needs to be last
 
 scroll = ttk.Scrollbar(textFrame, orient='vertical')  # Scroll Widget
 scroll.config(command=text.yview)
 scroll.pack(side=tkinter.RIGHT, fill='y')
-text.pack(fill='both',expand=True, side=tkinter.LEFT)  # need to pack text widget last for the scroll attachment
-
+text.pack(fill='both', expand=True, side=tkinter.LEFT)  # need to pack text widget last for the scroll attachment
 
 # Pack widgets into PanedWindow
 panedWindow.add(leftPane)
