@@ -1,6 +1,5 @@
-import tkinter
 from tkinter import *
-from tkinter import ttk
+
 
 
 class rightPane(Frame):
@@ -8,10 +7,15 @@ class rightPane(Frame):
         Frame.__init__(self, parent, width = 300)
         self.text = None
         self.right_click = None
+        self.info_button = None
         self.pack(expand=True, fill='both')
         self.r_widgets()
 
     def r_widgets(self):
+
+        self.info_button = Button(self, text="Text")
+        self.info_button.pack(side=TOP)
+
         self.text = Text(self, wrap='word')
         self.text.pack(expand=True, fill='both')
 
@@ -31,12 +35,6 @@ class rightPane(Frame):
             self.right_click.tk_popup(event.x_root, event.y_root)
         finally:
             self.right_click.grab_release()
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
