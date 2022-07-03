@@ -8,7 +8,7 @@ class Settings(Frame):
 
         self.setting_text_frame = Frame(self)
 
-        self.text = Text(self, width=50, height=7)
+        self.text = Text(self, width=40, height=7, wrap='word')
         self.text.pack(pady=5, expand=False)
 
         self.font_label = Label(self.setting_text_frame, text="Sample")
@@ -16,8 +16,8 @@ class Settings(Frame):
         self.line_label = Label(self.setting_text_frame, text="Sample")
         self.line_space_scale = ttk.Scale(self.setting_text_frame, orient=HORIZONTAL)
 
-        self.pack(padx=15)
-        self.setting_text_frame.pack(pady=15)
+        self.pack(padx=5)
+        self.setting_text_frame.pack(pady=5)
         self.widgets()
 
     def widgets(self):
