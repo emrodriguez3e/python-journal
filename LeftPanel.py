@@ -4,18 +4,29 @@ from tkinter import ttk
 import os
 import time
 
+"""
+Houses all widgets that can be found in the left side of the application
+Imports TreeView.py as well has functions that manipulate the treeview
+Buttons and search function here will be used to modify TreeView.py
+"""
 
 class leftPane(Frame):
+    # Class
     def __init__(self, parent=None):
+        # Init will import TreeView.py
+        # Create button
         Frame.__init__(self, parent, width=300)
         self.Tree = __import__('TreeView')
 
+        # Empty
         self.cog_sample = None
         self.plus_sample = None
 
-        self.upper_frame = Frame(self)
-        self.lower_frame = Frame(self)
+        # Two objects of this class
+        self.upper_frame = Frame(self)  # Widgets that need to be in the upper area will have this parent
+        self.lower_frame = Frame(self)  # Lower area widgets will have this parent
 
+        # Create buttons
         self.setting_button = ttk.Button(self.upper_frame, compound=CENTER)
         self.new_note = ttk.Button(self)
 
@@ -30,7 +41,7 @@ class leftPane(Frame):
         self.l_widgets()
 
     def l_widgets(self):
-
+        # TODO: Might be able to downsize a lot of this and just put this into the init
         self.upper_frame.pack(fill='x')
         self.lower_frame.pack(fill='both', expand=True)  # to keep Tree big
 

@@ -14,7 +14,9 @@ y = (hs/3) - (h/2)
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))  # set loading position
 root.minsize(width=450, height=300)  # set minimum window size
 paneModule = __import__('PanedWindow')
-paneModule.paneWindow()
+p_Module = paneModule.paneWindow()
+
+root.bind('<Control-d>', p_Module.d)
 root.mainloop()
 
 
