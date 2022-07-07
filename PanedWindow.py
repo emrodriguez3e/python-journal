@@ -19,10 +19,21 @@ class paneWindow(ttk.PanedWindow):
         self.note_area.text.insert(END,
                                    self.list_pane.tView.item(self.list_pane.tView.selection())['values'][0])
 
-        self.list_pane.bind('<ButtonRelease>', self.cross)
+        self.list_pane.tView.bind('<ButtonRelease>', self.text_change)
 
-    def cross(self, event=None):
-        self.note_area = self.rightPane.text.get()
+    def text_change(self, event=None):
+        # Grab text of item, delete current text then insert updated.
+        item = self.list_pane.tView.item(self.list_pane.tView.selection()[0])['text']
+        self.note_area.text.delete(0.0, END)
+        self.note_area.text.insert(END, item)
+
+    def update_note(self):
+        # Grab text
+        # TODO: Save note to correct item
+        # TODO: Should get rid of side-effects
+        new = self.note_area.text.get('1.0', 'end-1c')
+        row_id = self.list_pane.tView.index(self.list_pane.tView.focus())
+        print(row_id)
 
     def pane_control(self):
         pass
