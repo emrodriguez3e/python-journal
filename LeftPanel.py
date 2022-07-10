@@ -32,6 +32,9 @@ class leftPane(Frame):
         self.setting_button = ttk.Button(self.upper_frame, compound=CENTER)
         self.new_note = ttk.Button(self)
 
+        self.pin_list = self.Pin.PinView()
+        self.pin_list.forget()
+
         # self.t_view = ttk.Treeview
         self.right_click = None
         self.body = None

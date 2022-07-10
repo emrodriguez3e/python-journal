@@ -7,9 +7,16 @@ Only pinned notes should be modified here
 """
 
 
-class pinView(ttk.Treeview):
+class PinView(ttk.Treeview):
     def __init__(self, parent=None):
-        ttk.Treeview.__init__(self, parent, columns=0, show='headings')
+        ttk.Treeview.__init__(self, parent,
+                              columns=('noteHeader'),
+                              show='tree',
+                              height=14
+                              )
+
+        self.column('#0', minwidth=30, width=30, stretch=False)
+        self.column('#1', minwidth=70, width=100, stretch=True)
 
         self.file = None
 
@@ -26,3 +33,6 @@ class pinView(ttk.Treeview):
 
     def load(self):
         pass
+
+if __name__ == '__main__':
+    pinView().mainloop()

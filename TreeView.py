@@ -18,18 +18,18 @@ class Tree(ttk.Treeview):
         ttk.Treeview.__init__(self,
                               parent,
                               columns=('noteHeader'),
-                              height=14, show='tree')
-
-
+                              height=14,
+                              show='tree'
+                              )
 
         self.column('#0', minwidth=30, width=30, stretch=False)
-        self.column('#1', minwidth=70, width=100, stretch=True)
+        self.column('#1', minwidth=70, width=200, stretch=True)
 
         self.file = None
         self.pin_image = PhotoImage(file='media/pin.png')
         self.pin_sample = self.pin_image.subsample(60, 60)
 
-        self.bind('<Button-1>', self.p)
+        self.bind('<Button-1>', self.d)
         self.bind('<Button-2>', self.menu_popup)
         self.bind('<Button-3>', self.menu_popup)
         self.bind('<Command-BackSpace>')
@@ -47,8 +47,15 @@ class Tree(ttk.Treeview):
         self.tree_load()
         self.selection_set(self.get_children()[0])
 
+    def d(self, event=None):
+        pass
+        # print("Correct position: ",self.selection())
+        # print(self.identify('item', x=event.x, y=event.y))
+
     def menu_popup(self, event):
         # Right click menu that is based on coordinates of the mouse that is within TreeView.py
+        self.selection_set(self.identify_row(event.y))
+
         try:
             self.right_click.tk_popup(event.x_root, event.y_root)
         finally:
@@ -72,9 +79,9 @@ class Tree(ttk.Treeview):
                     load_list.append([time.ctime(a.st_ctime), i])
 
         for i in sorted(load_list, reverse=True):
-            file = open('noteDirectory/'+str(i[1]), 'r')
+            file = open('noteDirectory/' + str(i[1]), 'r')
             note = file.read()
-            self.insert('', 'end', text="", values=(note[:10], note, i))
+            self.insert('', 'end', text="", values=(note[:15], note, i))
             # print(note," :: ",i)
             file.close()
 
@@ -138,10 +145,6 @@ class Tree(ttk.Treeview):
             self.item(self.selection(), image=self.pin_sample)
         elif self.item(self.selection())['image'] != "":
             self.item(self.selection(), image="")
-
-
-    def p(self, event=None):
-        pass
 
 
 if __name__ == '__main__':

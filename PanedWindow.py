@@ -39,7 +39,7 @@ class paneWindow(ttk.PanedWindow):
         self.bind('<Control-d>', self.list_pane_add)
 
         self.list_pane.tView.bind('<ButtonRelease>', self.note_change)
-        self.list_pane.tView.bind('<Control-d>', self.debuger)
+        self.list_pane.tView.bind('<Control-d>', self.debugger)
 
         self.note_area.info_update()
         self.note_area.text.bind('<KeyRelease>', self.update_note)
@@ -48,14 +48,13 @@ class paneWindow(ttk.PanedWindow):
         # Changes the body of the note based on the next selection
         # Grab text of item, delete current text then insert updated.
         # TODO: Should change when a new note is created
-        item = self.list_pane.tView.item(self.list_pane.tView.selection())['text']
+        item = self.list_pane.tView.item(self.list_pane.tView.selection())['values'][1]
         self.note_area.text.delete(0.0, END)
         self.note_area.text.insert(END, item)
         self.note_area.info_update()
 
     def update_note(self, event=None):
         # Grab text
-        # TODO: Save note to corresponding file
         # TODO: Should get rid of side-effects
         # Grab Text
         new = self.note_area.text.get('1.0', 'end-1c')
@@ -90,7 +89,7 @@ class paneWindow(ttk.PanedWindow):
         self.note_area.list_button.forget()
 
 
-    def debuger(self, event=None):
+    def debugger(self, event=None):
         print(self.list_pane.tView.item(self.list_pane.tView.selection()))
 
 
