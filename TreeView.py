@@ -21,6 +21,8 @@ class Tree(ttk.Treeview):
                               show='headings'
                               )
 
+        self.file = None
+
         self.bind('<Button-2>', self.menu_popup)
         self.bind('<Button-3>', self.menu_popup)
         self.bind('<Command-BackSpace>')
@@ -46,20 +48,20 @@ class Tree(ttk.Treeview):
             self.right_click.grab_release()
 
     def tree_load(self):
-        # When the tree is loading
+        # When the tree is loading, load the list in a sorted fashion with the newest note being on top
         # TODO: Should this be in the init file???
-        if not os.path.isdir('noteDirectory'):
+        if not os.path.isdir('noteDirectory'):  # checks if the dir exists
             os.mkdir('noteDirectory')
 
         if len(os.listdir('noteDirectory')) == 0:
             pass
         else:
             for i in sorted(os.listdir('noteDirectory'), reverse=False):
-                if i != '.DS_Store':
-                    file = open('noteDirectory/' + str(i), 'r')
-                    note_title = file.read(15)
-                    self.insert('', 0, text=file.read(), values=(note_title, ''))
-                    file.close()
+                if not i == '.DS_Store':
+                    self.file = open('noteDirectory/' + str(i), 'r')
+                    note = self.file.read()
+                    self.insert('', 0, text=note, values=(note[:10], i))
+                    self.file.close()
             self.selection_set(self.get_children()[0])
 
     def note_name(self):
@@ -114,6 +116,9 @@ class Tree(ttk.Treeview):
     def get_body(self, event=None):
         # Should return the selected cell and return the note body
         return self.item(self.selection())['values'][0]
+
+    def pin(self):
+        pass
 
 
 if __name__ == '__main__':

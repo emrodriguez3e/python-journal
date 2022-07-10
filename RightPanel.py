@@ -10,6 +10,8 @@ class rightPane(Frame):
 
         self.text = Text(self.lowerFrame, wrap='word')
 
+        self.list_button = ttk.Button(self.upperFrame, text='Button')
+
         self.info_panel = Frame(self.lowerFrame, width=100)
         self.info_button = ttk.Button(self.upperFrame, text='i', command=self.info_pack)
 
@@ -31,10 +33,13 @@ class rightPane(Frame):
         self.setting_widgets()
         self.r_widgets()
 
+        self.text.bind('<KeyRelease>', self.info_update)
+
     def r_widgets(self):
 
         self.upperFrame.pack(fill='x', padx=3)
         self.lowerFrame.pack(fill='both', expand=True)
+
         self.info_button.pack(side=RIGHT)
 
         self.text.pack(side=LEFT, fill='both', expand=True)
@@ -67,13 +72,22 @@ class rightPane(Frame):
         if self.info_panel.winfo_ismapped() == 1:
             self.info_panel.forget()
         else:
-            self.info_panel.pack(side=RIGHT)
+            self.info_panel.pack(side=RIGHT, before=self.text)
 
     def menu_pop_up(self, event):
         try:
             self.right_click.tk_popup(event.x_root, event.y_root)
         finally:
             self.right_click.grab_release()
+
+    def info_update(self, event=None):
+        body = self.text.get('1.0', 'end-1c')
+        self.char_count.config(text=len(body))
+        self.word_count.config(text=len(body.split()))
+        self.para_count.config(text=len(body.split('\n\n')))
+
+    def hidden_panel(self, event=None):
+        self.list_button.pack(side=LEFT)
 
 
 if __name__ == '__main__':

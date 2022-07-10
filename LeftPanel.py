@@ -10,8 +10,9 @@ Imports TreeView.py as well has functions that manipulate the treeview
 Buttons and search function here will be used to modify TreeView.py
 """
 
+
 class leftPane(Frame):
-    # Class
+    # Subclass of Frame
     def __init__(self, parent=None):
         # Init will import TreeView.py
         # Create button
