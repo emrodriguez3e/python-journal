@@ -10,7 +10,7 @@ class rightPane(Frame):
 
         self.text = Text(self.lowerFrame, wrap='word')
 
-        self.list_button = ttk.Button(self.upperFrame, text='Button')
+        self.list_button = ttk.Button(self.upperFrame, text='<')
 
         self.info_panel = Frame(self.lowerFrame, width=100)
         self.info_button = ttk.Button(self.upperFrame, text='i', command=self.info_pack)

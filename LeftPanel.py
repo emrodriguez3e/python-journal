@@ -18,6 +18,7 @@ class leftPane(Frame):
         # Create button
         Frame.__init__(self, parent, width=300)
         self.Tree = __import__('TreeView')
+        self.Pin = __import__('PinView')
 
         # Empty
         self.cog_sample = None

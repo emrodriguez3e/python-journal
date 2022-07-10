@@ -20,7 +20,6 @@ class paneWindow(ttk.PanedWindow):
         self.rightPane = __import__('RightPanel')
         self.pack(expand=True, fill='both')
 
-
         # instantiate objects of imported files
         self.list_pane = self.leftPane.leftPane()
         self.note_area = self.rightPane.rightPane()
@@ -30,11 +29,10 @@ class paneWindow(ttk.PanedWindow):
         self.add(self.list_pane)
         self.add(self.note_area)
 
-        print(self.panes())
-
         # Automatically load the top note into text area
+
         self.note_area.text.insert(END,
-                                   self.list_pane.tView.item(self.list_pane.tView.selection())['values'][0])
+                                   self.list_pane.tView.item(self.list_pane.tView.get_children()[0])['values'][1])
 
         # Bindings
         self.bind('<ButtonRelease>', self.sash_adjustment)
@@ -67,10 +65,12 @@ class paneWindow(ttk.PanedWindow):
         file_name = self.list_pane.tView.item(self.list_pane.tView.selection())['values'][1]
         file = open('noteDirectory/'+file_name, 'w')
         file.write(new)  # overwrite note body
+        tmp = self.list_pane.tView.item(self.list_pane.tView.selection())
+        insert = tmp['values']
 
         # update item
-        self.list_pane.tView.item(item=self.list_pane.tView.selection(),
-                                  text=new)  # this updates note body
+        self.list_pane.tView.item(self.list_pane.tView.selection(),
+                                  values=insert)  # this updates note body
         self.list_pane.tView.item(item=self.list_pane.tView.selection(),
                                   values=(new[:10],
                                           self.list_pane.tView.item(self.list_pane.tView.selection())['values'][1]))

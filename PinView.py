@@ -6,6 +6,7 @@ Only pinned notes should be modified here
 
 """
 
+
 class pinView(ttk.Treeview):
     def __init__(self, parent=None):
         ttk.Treeview.__init__(self, parent, columns=0, show='headings')

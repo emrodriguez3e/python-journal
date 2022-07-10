@@ -1,28 +1,34 @@
-import datetime
-import time
+import tkinter as tk
+import tkinter.ttk as ttk
 
-# TODO: The issue is how to name the file
+class App(ttk.Frame):
 
-'''
-File name should be (DateString)(TimeString)
-YYYYMMDD
-HHMMSS(MSMSMS)
-Including milliseconds, accuracy of 3 digits. 
-'''
+    def __init__(self, parent=None, *args, **kwargs):
+        ttk.Frame.__init__(self, parent)
+        self.parent = parent
 
-print(str(datetime.date.today()).replace("-", ""))
-print(time.localtime())
+        # Create Treeview
+        self.tree = ttk.Treeview(self, column=('A'), selectmode='none', height=7)
+        self.tree.grid(row=0, column=0, sticky='nsew')
 
-local = time.localtime()
-time_stamp = time.time()
+        # Setup column heading
+        self.tree.heading('#0', text=' Pic directory', anchor='center')
+
+        # Insert image to #0
+        self._img = tk.PhotoImage(file="media/pin.png") #change to your file path
+        self._img_sub = self._img.subsample(47,47)
+        self.tree.insert('', 'end', text=" #0's text", image=self._img_sub,
+                         value=("A's value", "B's value"))
 
 
-print("File name is: " +
-      str(local.tm_year) + "-" +
-      str(local.tm_mon) + "-" +
-      str(local.tm_mday) + "-" +
-      str(local.tm_hour) + "-" +
-      str(local.tm_min) + "-" +
-      str(local.tm_sec) + "-" +
-      str(int(round((time.time() % 1), 2)*100) )+".txt")
+if __name__ == '__main__':
+    root = tk.Tk()
+    root.geometry('450x180+300+300')
 
+    app = App(root)
+    app.grid(row=0, column=0, sticky='nsew')
+
+    root.rowconfigure(0, weight=1)
+    root.columnconfigure(0, weight=1)
+
+    root.mainloop()
