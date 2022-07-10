@@ -20,6 +20,8 @@ class Tree(ttk.Treeview):
                               columns=('noteHeader'),
                               height=14, show='tree')
 
+
+
         self.column('#0', minwidth=30, width=30, stretch=False)
         self.column('#1', minwidth=70, width=100, stretch=True)
 
@@ -55,21 +57,26 @@ class Tree(ttk.Treeview):
     def tree_load(self):
         # When the tree is loading, load the list in a sorted fashion with the newest note being on top
         # TODO: Should this be in the init file???
+
+        load_list = []
+
         if not os.path.isdir('noteDirectory'):  # checks if the dir exists
             os.mkdir('noteDirectory')
 
         if len(os.listdir('noteDirectory')) == 0:
             pass
         else:
-            for i in sorted(os.listdir('noteDirectory'), reverse=False):
-
+            for i in os.listdir('noteDirectory'):
                 if not i == '.DS_Store':
-                    self.file = open('noteDirectory/' + str(i), 'r')
-                    note = self.file.read()
-                    self.insert('', 'end', text=" ", values=(note[:10], note,  i))
-                    print(note[:10], " :: ",note," :: " , i)
-                    self.file.close()
-            # self.selection_set(self.get_children()[0])
+                    a = os.stat(os.path.join('noteDirectory', i))
+                    load_list.append([time.ctime(a.st_ctime), i])
+
+        for i in sorted(load_list, reverse=True):
+            file = open('noteDirectory/'+str(i[1]), 'r')
+            note = file.read()
+            self.insert('', 'end', text="", values=(note[:10], note, i))
+            # print(note," :: ",i)
+            file.close()
 
     def note_name(self):
         # Function that creates the name of the file
