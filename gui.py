@@ -1,26 +1,41 @@
 from tkinter import *
+import os
 
 """
 This file is for creating the gui from the top level
 All modules make calls based on their relativity
 """
 
-root = Tk()
-root.title('Python Journal')
-w = 550
-h = 350
 
-ws = root.winfo_screenwidth()
-hs = root.winfo_screenheight()
+def check():
+    # method to check if the directory exists.
+    if os.path.exists('noteDirectory') == True:
+        tkinter_app()
 
-x = (ws/4) - (w/2)
-y = (hs/3) - (h/2)
 
-root.geometry('%dx%d+%d+%d' % (w, h, x, y))  # set loading position
-root.minsize(width=450, height=300)  # set minimum window size
-paneModule = __import__('PanedWindow')
-p_Module = paneModule.paneWindow()
+def tkinter_app():
 
-root.mainloop()
+    root = Tk()  # create root window
+    root.title('Python Journal')  # Label the window
+
+    # Create the area that the app will open initially
+    w = 550
+    h = 350
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws/4) - (w/2)
+    y = (hs/3) - (h/2)
+
+    root.geometry('%dx%d+%d+%d' % (w, h, x, y))  # set loading position
+    root.minsize(width=450, height=300)  # set minimum window size
+
+    pane_module = __import__('PanedWindow')  # import paneWindow
+    pane_module.paneWindow()  # Call PaneWindow
+
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    check()
 
 

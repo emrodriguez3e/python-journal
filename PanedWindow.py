@@ -29,17 +29,13 @@ class paneWindow(ttk.PanedWindow):
         self.add(self.list_pane)
         self.add(self.note_area)
 
-        # Automatically load the top note into text area
-
-        self.note_area.text.insert(END,
-                                   self.list_pane.tView.item(self.list_pane.tView.get_children()[0])['values'][1])
 
         # Bindings
         self.bind('<ButtonRelease>', self.sash_adjustment)
         self.bind('<Control-d>', self.list_pane_add)
 
         self.list_pane.tView.bind('<ButtonRelease>', self.note_change)
-        self.list_pane.tView.bind('<Control-d>', self.debugger)
+
 
         self.note_area.info_update()
         self.note_area.text.bind('<KeyRelease>', self.update_note)
@@ -56,23 +52,22 @@ class paneWindow(ttk.PanedWindow):
     def update_note(self, event=None):
         # Grab text
         # TODO: Should get rid of side-effects
-        # Grab Text
-        new = self.note_area.text.get('1.0', 'end-1c')
-        self.note_area.info_update()
+        new = self.note_area.text.get('1.0', 'end-1c')  # This gets the text of the note
+        tmp = self.list_pane.tView.item(self.list_pane.tView.selection())['values']
+        print(tmp)
 
         # get file name
-        file_name = self.list_pane.tView.item(self.list_pane.tView.selection())['values'][1]
+        file_name = self.list_pane.tView.item(self.list_pane.tView.selection())['values'][2]
         file = open('noteDirectory/'+file_name, 'w')
         file.write(new)  # overwrite note body
-        tmp = self.list_pane.tView.item(self.list_pane.tView.selection())
-        insert = tmp['values']
 
         # update item
         self.list_pane.tView.item(self.list_pane.tView.selection(),
-                                  values=insert)  # this updates note body
-        self.list_pane.tView.item(item=self.list_pane.tView.selection(),
-                                  values=(new[:10],
-                                          self.list_pane.tView.item(self.list_pane.tView.selection())['values'][1]))
+                                  values=tmp)  # this updates note body
+        self.note_area.info_update()
+
+        # self.list_pane.tView.item(item=self.list_pane.tView.selection(),
+        #                           values=tmp)
         file.close()  # close file
 
     def pane_control(self):
@@ -89,8 +84,7 @@ class paneWindow(ttk.PanedWindow):
         self.note_area.list_button.forget()
 
 
-    def debugger(self, event=None):
-        print(self.list_pane.tView.item(self.list_pane.tView.selection()))
+
 
 
 if __name__ == '__main__':

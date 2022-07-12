@@ -11,13 +11,28 @@ Reading/Writing/Updating should be held in this area
 """
 
 
+def note_name():
+    # Function that creates the name of the file
+    local = time.localtime()
+
+    file_name = str(local.tm_year) + "-" + \
+                str(local.tm_mon) + "-" + \
+                str(local.tm_mday) + "-" + \
+                str(local.tm_hour) + "-" + \
+                str(local.tm_min) + "-" + \
+                str(local.tm_sec) + "-" + \
+                str(int(round((time.time() % 1), 2) * 100)) + '.txt'
+
+    return str(file_name)
+
+
 class Tree(ttk.Treeview):
     # Subclass of ttk.TreeView
     def __init__(self, parent=None, *args):
         # Creates subclass
         ttk.Treeview.__init__(self,
                               parent,
-                              columns=('noteHeader'),
+                              columns='noteHeader',
                               height=14,
                               show='tree'
                               )
@@ -29,28 +44,21 @@ class Tree(ttk.Treeview):
         self.pin_image = PhotoImage(file='media/pin.png')
         self.pin_sample = self.pin_image.subsample(60, 60)
 
-        self.bind('<Button-1>', self.d)
         self.bind('<Button-2>', self.menu_popup)
         self.bind('<Button-3>', self.menu_popup)
         self.bind('<Command-BackSpace>')
+        self.bind('<Control-d>', self.d)
 
         self.right_click = Menu(self, tearoff=0)
         self.right_click.add_command(label='Duplicate', command=self.duplicate_note)
         self.right_click.add_command(label='Delete', command=self.delete_item)
-        # self.right_click.add_command(label='Rename')
         self.right_click.add_separator()
-        self.right_click.add_command(label='Merge')
-        self.right_click.add_command(label='Open In New Window')
+        # self.right_click.add_command(label='Merge')
+        # self.right_click.add_command(label='Open In New Window')
         self.right_click.add_command(label='Pin', command=self.pin)
 
         self.pack(expand=True, fill='both')
         self.tree_load()
-        self.selection_set(self.get_children()[0])
-
-    def d(self, event=None):
-        pass
-        # print("Correct position: ",self.selection())
-        # print(self.identify('item', x=event.x, y=event.y))
 
     def menu_popup(self, event):
         # Right click menu that is based on coordinates of the mouse that is within TreeView.py
@@ -63,7 +71,6 @@ class Tree(ttk.Treeview):
 
     def tree_load(self):
         # When the tree is loading, load the list in a sorted fashion with the newest note being on top
-        # TODO: Should this be in the init file???
 
         load_list = []
 
@@ -81,53 +88,46 @@ class Tree(ttk.Treeview):
         for i in sorted(load_list, reverse=True):
             file = open('noteDirectory/' + str(i[1]), 'r')
             note = file.read()
-            self.insert('', 'end', text="", values=(note[:15], note, i))
-            # print(note," :: ",i)
+            self.insert('', 'end', text="", values=(note[:15], note, i[1]))
             file.close()
 
-    def note_name(self):
-        # Function that creates the name of the file
-        local = time.localtime()
-
-        file_name = str(local.tm_year) + "-" + \
-                    str(local.tm_mon) + "-" + \
-                    str(local.tm_mday) + "-" + \
-                    str(local.tm_hour) + "-" + \
-                    str(local.tm_min) + "-" + \
-                    str(local.tm_sec) + "-" + \
-                    str(int(round((time.time() % 1), 2) * 100)) + '.txt'
-
-        return str(file_name)
+        self.selection_set(self.get_children()[0])
 
     def new_note(self):
         # Will create a new note and set the tree selection to be the newest note which is at the top of the list
-        file_name = self.note_name()
+        file_name = note_name()
         file = open('noteDirectory/' + file_name, 'w')
         body = 'New Note ' + file_name
         file.write(body)
         file.close()
-        self.insert('', index=0, values=(body[0:10], body, file_name))
+        self.insert('', index=0, values=(body[:10], body, file_name))
         self.selection_set(self.get_children()[0])
 
     def duplicate_note(self, event=None):
         # Finds the correct file to acquire the name of the note and the body of the note.
         # Will create a new note with 'copy' at the end and will write the same body of text to said note
+
+        children_names = [] * len(self.get_children())
+        for i in self.get_children():
+            children_names.append(self.item(i)['values'][2])
+
         file = open('noteDirectory/' + self.item(self.selection())['values'][2], 'r')
         copy = file.read()
         file.close()
 
-        print(copy)
-
         # Duplicate that note
         file_name = self.item(self.selection())['values'][2].replace('.txt', ' copy.text')
+
+        while file_name in children_names:
+            file_name = file_name.replace('copy', 'copy copy', 1)
+
         row_id = self.index(self.selection())
         file = open('noteDirectory/' + file_name, 'w')
-        body = copy
-        file.write(body)
+        file.write(copy)
         file.close()
 
         # insert note after duplicated note
-        self.insert('', row_id, values=(body[:10], body, file_name))
+        self.insert('', index=row_id, values=(copy[:15], copy, file_name))
 
     def delete_item(self, event=None):
         # This should find the item, delete it as well as remove it from self
@@ -145,6 +145,11 @@ class Tree(ttk.Treeview):
             self.item(self.selection(), image=self.pin_sample)
         elif self.item(self.selection())['image'] != "":
             self.item(self.selection(), image="")
+
+    def d(self, event=None):
+        for i in self.get_children():
+            print(self.item(i)['values'])
+        print()
 
 
 if __name__ == '__main__':

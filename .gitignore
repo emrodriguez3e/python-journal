@@ -1,6 +1,7 @@
 # Don't include example directories.
 .gitignore
 noteDirectory/
+noteDirectory
 images/*
 *.xml
 *.iml
