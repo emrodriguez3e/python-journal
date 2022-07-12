@@ -5,27 +5,41 @@ from tkinter import ttk
 class rightPane(Frame):
     def __init__(self, parent=None):
         Frame.__init__(self, parent)
-        self.upperFrame = Frame(self)
-        self.lowerFrame = Frame(self)
 
-        self.text = Text(self.lowerFrame, wrap='word')
+        self.main_upper = Frame(self)
+        self.main_lower = Frame(self)
 
-        self.list_button = ttk.Button(self.upperFrame, text='<')
+        self.info_panel = Frame(self.main_lower, width=100)
+        self.setting_upper = Frame(self.info_panel)
+        self.setting_lower = Frame(self.info_panel)
 
-        self.info_panel = Frame(self.lowerFrame, width=100)
-        self.info_button = ttk.Button(self.upperFrame, text='i', command=self.info_pack)
+        self.text = Text(self.main_lower, wrap='word')
 
-        self.char_label = Label(self.info_panel, text='Characters ')
-        self.char_count = Label(self.info_panel, text='0 ')
+        self.list_button = ttk.Button(self.main_upper, text='<')
 
-        self.word_label = Label(self.info_panel, text='Words ')
-        self.word_count = Label(self.info_panel, text='0')
+        self.info_button = ttk.Button(self.main_upper, text='i', command=self.info_pack)
 
-        self.read_label = Label(self.info_panel, text='Read Time ')
-        self.read_count = Label(self.info_panel, text='0M ')
+        # Build everything for the top section of the info panel
+        self.char_count = Label(self.setting_upper, text='0 ')
+        self.char_label = Label(self.setting_upper, text='Characters ')
 
-        self.para_label = Label(self.info_panel, text='Paragraphs ')
-        self.para_count = Label(self.info_panel, text='0 ')
+        self.word_label = Label(self.setting_upper, text='Words ')
+        self.word_count = Label(self.setting_upper, text='0')
+
+        self.read_label = Label(self.setting_upper, text='Read Time ')
+        self.read_count = Label(self.setting_upper, text='0M ')
+
+        self.para_label = Label(self.setting_upper, text='Paragraphs ')
+        self.para_count = Label(self.setting_upper, text='0 ')
+
+
+        # Build for the bottom section of the info panel
+        self.docx_Label = Label(self.setting_lower, text='WORD')
+        self.docx_Label.grid(row=0, column=1)
+        self.txt_label = Label(self.setting_lower, text='TXT')
+        self.txt_label.grid(row=0, column=2)
+        self.pdf_label = Label(self.setting_lower, text='PDF')
+        self.pdf_label.grid(row=0, column=3)
 
         self.right_click = Menu(self, tearoff=0)
 
@@ -37,8 +51,11 @@ class rightPane(Frame):
 
     def r_widgets(self):
 
-        self.upperFrame.pack(fill='x', padx=3)
-        self.lowerFrame.pack(fill='both', expand=True)
+        self.main_upper.pack(fill='x', padx=3)
+        self.main_lower.pack(fill='both', expand=True)
+
+        self.setting_upper.pack()
+        self.setting_lower.pack()
 
         self.info_button.pack(side=RIGHT)
 

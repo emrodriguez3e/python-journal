@@ -57,7 +57,7 @@ class paneWindow(ttk.PanedWindow):
 
     def update_note(self, event=None):
         # Grab text
-
+        # TODO: Doesn't know when new note button is fired
         new = self.note_area.text.get('1.0', 'end-1c')  # This gets the text of the note
         tmp = self.list_pane.tView.item(self.list_pane.tView.selection())['values']  # Get current values
 
