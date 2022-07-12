@@ -29,16 +29,22 @@ class paneWindow(ttk.PanedWindow):
         self.add(self.list_pane)
         self.add(self.note_area)
 
-
         # Bindings
         self.bind('<ButtonRelease>', self.sash_adjustment)
         self.bind('<Control-d>', self.list_pane_add)
 
         self.list_pane.tView.bind('<ButtonRelease>', self.note_change)
 
-
         self.note_area.info_update()
         self.note_area.text.bind('<KeyRelease>', self.update_note)
+
+        self.load()
+
+    def load(self):
+        # Set the text when the program loads
+        # TreeView always selects top note, unless thre isn't any note to grab
+        if len(self.list_pane.tView.selection()) != 0:
+            self.note_change()
 
     def note_change(self, event=None):
         # Changes the body of the note based on the next selection
@@ -51,27 +57,23 @@ class paneWindow(ttk.PanedWindow):
 
     def update_note(self, event=None):
         # Grab text
-        # TODO: Should get rid of side-effects
+
         new = self.note_area.text.get('1.0', 'end-1c')  # This gets the text of the note
-        tmp = self.list_pane.tView.item(self.list_pane.tView.selection())['values']
-        print(tmp)
+        tmp = self.list_pane.tView.item(self.list_pane.tView.selection())['values']  # Get current values
+
+        tmp[0] = new
+        tmp[1] = new
 
         # get file name
         file_name = self.list_pane.tView.item(self.list_pane.tView.selection())['values'][2]
         file = open('noteDirectory/'+file_name, 'w')
         file.write(new)  # overwrite note body
+        file.close()
 
         # update item
         self.list_pane.tView.item(self.list_pane.tView.selection(),
                                   values=tmp)  # this updates note body
         self.note_area.info_update()
-
-        # self.list_pane.tView.item(item=self.list_pane.tView.selection(),
-        #                           values=tmp)
-        file.close()  # close file
-
-    def pane_control(self):
-        pass
 
     def sash_adjustment(self, event=None):
         if not len(self.panes()) < 2:  # checks if two panes exist.
@@ -82,9 +84,6 @@ class paneWindow(ttk.PanedWindow):
     def list_pane_add(self, event=None):
         self.insert(0, self.list_pane)
         self.note_area.list_button.forget()
-
-
-
 
 
 if __name__ == '__main__':

@@ -9,7 +9,10 @@ All modules make calls based on their relativity
 
 def check():
     # method to check if the directory exists.
-    if os.path.exists('noteDirectory') == True:
+    if os.path.exists('noteDirectory'):
+        tkinter_app()
+    else:
+        os.mkdir('noteDirectory')
         tkinter_app()
 
 

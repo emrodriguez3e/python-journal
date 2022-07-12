@@ -93,7 +93,7 @@ class Tree(ttk.Treeview):
         for i in sorted(load_list, reverse=True):
             file = open('noteDirectory/' + str(i[1]), 'r')
             note = file.read()
-            self.insert('', 'end', text="", values=(note[:15], note, i[1]))
+            self.insert('', 'end', text="", values=(note[:25], note, i[1]))
             file.close()
 
         self.selection_set(self.get_children()[0])
@@ -105,7 +105,7 @@ class Tree(ttk.Treeview):
         body = 'New Note ' + file_name
         file.write(body)
         file.close()
-        self.insert('', index=0, values=(body[:10], body, file_name))
+        self.insert('', index=0, values=(body[:25], body, file_name))
         self.selection_set(self.get_children()[0])
 
     def duplicate_note(self, event=None):
@@ -132,7 +132,7 @@ class Tree(ttk.Treeview):
         file.close()
 
         # insert note after duplicated note
-        self.insert('', index=row_id, values=(copy[:15], copy, file_name))
+        self.insert('', index=row_id, values=(copy[:25], copy, file_name))
 
     def delete_item(self, event=None):
         # This should find the item, delete it as well as remove it from self
