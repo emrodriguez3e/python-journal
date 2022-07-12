@@ -50,7 +50,11 @@ class leftPane(Frame):
         self.tView.bind('<ButtonRelease>', self.get_body)
 
     def get_body(self, event=None):
+        # This can cause an error
+        if len(self.tView.selection()) == 0:
+            return
         body = self.tView.get_body()
+        print(body)
         return body
 
 

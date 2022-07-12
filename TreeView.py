@@ -60,6 +60,8 @@ class Tree(ttk.Treeview):
         self.pack(expand=True, fill='both')
         self.tree_load()
 
+
+
     def menu_popup(self, event):
         # Right click menu that is based on coordinates of the mouse that is within TreeView.py
         self.selection_set(self.identify_row(event.y))
@@ -71,6 +73,9 @@ class Tree(ttk.Treeview):
 
     def tree_load(self):
         # When the tree is loading, load the list in a sorted fashion with the newest note being on top
+
+        if len(os.listdir('noteDirectory')) == 0:
+            return
 
         load_list = []
 
@@ -131,11 +136,27 @@ class Tree(ttk.Treeview):
 
     def delete_item(self, event=None):
         # This should find the item, delete it as well as remove it from self
+        if self.get_children() == 0:  # If there is no item to delete
+            return
+        if len(self.selection()) == 0:  # If there is no selection
+            return
+
+        if self.index(self.selection()) == 0:
+            note_id = self.index(self.selection()) + 1
+        elif self.index(self.selection()) == len(self.get_children())-1:
+            note_id = self.index(self.selection()) - 1
+
         os.remove('noteDirectory/' + self.item(self.selection())['values'][2])
         self.delete(self.selection())
+        if len(self.get_children()) == 0:
+            return
+        self.selection_set(self.get_children()[note_id])
+        print(self.get_children())
 
     def get_body(self, event=None):
         # Should return the selected cell and return the note body
+        if len(self.get_children()) == 0:
+            return
         return self.item(self.selection())['values'][1]
 
     def pin(self):
@@ -147,9 +168,8 @@ class Tree(ttk.Treeview):
             self.item(self.selection(), image="")
 
     def d(self, event=None):
-        for i in self.get_children():
-            print(self.item(i)['values'])
-        print()
+        # hitting control d will run this code block.
+        print(len(self.selection()) == 0)
 
 
 if __name__ == '__main__':
