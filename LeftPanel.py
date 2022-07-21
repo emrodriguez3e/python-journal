@@ -19,6 +19,8 @@ class leftPane(Frame):
         Frame.__init__(self, parent, width=300)
         self.Tree = __import__('TreeView')
         self.Pin = __import__('PinView')
+        self.Setting = __import__('SettingMenu')
+
 
         # Two objects of this class
         self.upper_frame = Frame(self)  # Widgets that need to be in the upper area will have this parent
@@ -32,6 +34,12 @@ class leftPane(Frame):
         self.pack(fill='both', expand=True)
         self.tView = self.Tree.Tree(parent=self.lower_frame)
 
+        self.setting_window = None
+        self.setting_f = None
+        # self.setting_f.forget()
+        self.topLevel_exists = False
+
+
         # Create the images for the buttons
         cog_image = PhotoImage(file=r'media/cog.png')
         self.cog_sample = cog_image.subsample(7, 7)
@@ -39,7 +47,7 @@ class leftPane(Frame):
         self.plus_sample = plus_image.subsample(16, 16)
 
         # Create buttons
-        self.setting_button = ttk.Button(self.upper_frame, compound=CENTER, image=self.cog_sample)
+        self.setting_button = ttk.Button(self.upper_frame, compound=CENTER, image=self.cog_sample, command=self.setting_frame)
         self.setting_button.pack(side=tkinter.LEFT, padx=3)
         self.new_note = ttk.Button(self, image=self.plus_sample, command=self.tView.new_note)
         self.new_note.place(relx=0.9, rely=0.95, anchor='se')
@@ -56,6 +64,17 @@ class leftPane(Frame):
         body = self.tView.get_body()
         print(body)
         return body
+
+    def setting_frame(self):
+        try:
+            if tkinter.Toplevel.winfo_exists(self.setting_window) == 1:
+                pass
+            else:
+                self.setting_window = Toplevel()
+                self.setting_f = self.Setting.Settings(parent=self.setting_window)
+        except:
+            self.setting_window = Toplevel()
+            self.setting_f = self.Setting.Settings(parent=self.setting_window)
 
 
 if __name__ == '__main__':
