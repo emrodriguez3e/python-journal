@@ -37,8 +37,8 @@ class Tree(ttk.Treeview):
                               show='tree'
                               )
 
-        self.column('#0', minwidth=30, width=30, stretch=False)
-        self.column('#1', minwidth=70, width=200, stretch=True)
+        self.column('#0', minwidth=25, width=25, stretch=False, anchor='center')
+        self.column('#1', minwidth=75, width=200, stretch=True)
 
         self.file = None
         self.pin_image = PhotoImage(file='media/pin.png')
