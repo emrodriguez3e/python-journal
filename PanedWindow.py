@@ -12,8 +12,11 @@ Cross functions such as list view to note view and vice versa is done here
 class paneWindow(ttk.PanedWindow):
     # Subclass ttk.PanedWindow
     def __init__(self, parent=None):
+
+        self.style = ttk.Style()
+        self.style.configure('TPanedwindow', background='white')
         # Init
-        ttk.PanedWindow.__init__(self, parent, orient='horizontal')
+        ttk.PanedWindow.__init__(self, parent, orient='horizontal', style='TPanedwindow')
 
         # import proper relevant files
         self.leftPane = __import__('LeftPanel')

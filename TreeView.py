@@ -30,11 +30,16 @@ class Tree(ttk.Treeview):
     # Subclass of ttk.TreeView
     def __init__(self, parent=None, *args):
         # Creates subclass
+
+        self.style = ttk.Style()
+        self.style.configure('Treeview', background='#121212', fieldbackground='#121212')
+
+
         ttk.Treeview.__init__(self,
                               parent,
                               columns='noteHeader',
-                              height=14,
-                              show='tree'
+                              show='tree',
+                              style='Treeview'
                               )
 
         self.column('#0', minwidth=25, width=25, stretch=False, anchor='center')

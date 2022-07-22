@@ -21,6 +21,7 @@ def tkinter_app():
     root = Tk()  # create root window
     root.title('Python Journal')  # Label the window
 
+
     # Create the area that the app will open initially
     w = 550
     h = 350

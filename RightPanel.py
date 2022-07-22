@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 
+"""
+
+bg should be #333333
+"""
 
 class rightPane(Frame):
     def __init__(self, parent=None):
@@ -43,7 +47,8 @@ class rightPane(Frame):
 
         self.right_click = Menu(self, tearoff=0)
 
-        self.pack(expand=True, fill='both', padx=5)
+        self.text.pack(side=LEFT, fill='both', expand=True, padx=1)
+        self.pack(expand=True, fill='both', padx=3)
         self.setting_widgets()
         self.r_widgets()
 
@@ -51,7 +56,7 @@ class rightPane(Frame):
 
     def r_widgets(self):
 
-        self.main_upper.pack(fill='x', padx=3)
+        self.main_upper.pack(fill='x', padx=1)
         self.main_lower.pack(fill='both', expand=True)
 
         self.setting_upper.pack()
@@ -59,7 +64,7 @@ class rightPane(Frame):
 
         self.info_button.pack(side=RIGHT)
 
-        self.text.pack(side=LEFT, fill='both', expand=True, padx=50)
+
 
         self.text.bind('<Button-2>', self.menu_pop_up)
         self.text.bind('<Button-3>', self.menu_pop_up)
