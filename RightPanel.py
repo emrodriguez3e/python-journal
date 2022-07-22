@@ -13,7 +13,7 @@ class rightPane(Frame):
         self.setting_upper = Frame(self.info_panel)
         self.setting_lower = Frame(self.info_panel)
 
-        self.text = Text(self.main_lower, wrap='word')
+        self.text = Text(self.main_lower, bg='#333333', wrap='word', borderwidth=0, bd=0, highlightthickness=0)
 
         self.list_button = ttk.Button(self.main_upper, text='<')
 
@@ -59,7 +59,7 @@ class rightPane(Frame):
 
         self.info_button.pack(side=RIGHT)
 
-        self.text.pack(side=LEFT, fill='both', expand=True)
+        self.text.pack(side=LEFT, fill='both', expand=True, padx=50)
 
         self.text.bind('<Button-2>', self.menu_pop_up)
         self.text.bind('<Button-3>', self.menu_pop_up)

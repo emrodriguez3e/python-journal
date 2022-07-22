@@ -16,7 +16,7 @@ class leftPane(Frame):
     def __init__(self, parent=None):
         # Init will import TreeView.py
         # Create button
-        Frame.__init__(self, parent, width=300)
+        Frame.__init__(self, parent, width=300, background='#333333')
         self.Tree = __import__('TreeView')
         self.Pin = __import__('PinView')
         self.Setting = __import__('SettingMenu')

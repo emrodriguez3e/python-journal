@@ -28,10 +28,11 @@ class Settings(Frame):
 
         # Text area that should not be editable at all.
         # Meant to show the preview of the text before applying it to all notes
-        self.text = Text(self, width=30, height=15, wrap='word')
+        self.text = Text(self, width=30, height=15, wrap='word', bd=0, highlightthickness=0, borderwidth=0,
+                         background='#343434')
         self.text.insert(END, 'This is a sample text')
         self.text['state'] = 'disabled'  # Text should not be editable
-        self.text.pack()
+        self.text.pack(padx=5)
 
         self.font_size_value = tkinter.DoubleVar()
         self.line_space_value = tkinter.DoubleVar()
@@ -45,7 +46,7 @@ class Settings(Frame):
         self.line_label = Label(self.setting_text_frame, text="Sample")
         self.line_space_scale = ttk.Scale(self.setting_text_frame, orient=HORIZONTAL)
 
-        self.pack()
+        self.pack(padx=5, pady=5)
         self.setting_text_frame.pack(pady=5)
         self.widgets()
 

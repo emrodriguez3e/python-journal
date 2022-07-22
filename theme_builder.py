@@ -5,6 +5,7 @@ from tkinter import ttk
 This file is to help experiment with various themes. 
 Just note, that there is naming conventions for the various stylings
 
+This file may be useless in macOS. 
 """
 
 
