@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 import os
 
 """
@@ -21,6 +22,9 @@ def tkinter_app():
     root = Tk()  # create root window
     root.title('Python Journal')  # Label the window
 
+    style = ttk.Style()
+    style.configure("Custom.TFrame", background="black", foreground="white", font=("Helvetica", 12))
+
 
     # Create the area that the app will open initially
     w = 550
@@ -34,7 +38,7 @@ def tkinter_app():
     root.minsize(width=450, height=300)  # set minimum window size
 
     pane_module = __import__('PanedWindow')  # import paneWindow
-    pane_module.paneWindow()  # Call PaneWindow
+    pane_module.paneWindow(style="Custom.TFrame")  # Call PaneWindow
 
     root.mainloop()
 
